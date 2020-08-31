@@ -36,7 +36,8 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // don't want to redirect to https. Also removed https address from launchSettings.json (API section, application url)
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
