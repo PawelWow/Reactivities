@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Internal;
+﻿using Domain;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Domain;
 
 namespace Persistance
 {
