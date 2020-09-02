@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -22,6 +23,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Activity>>> List()
         {
+            // mo¿na z tokenem: return await m_mediator.Send(new List.Query(), cancellation);
+            
             return await m_mediator.Send(new List.Query());
         }
 
