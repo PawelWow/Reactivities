@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +18,8 @@ namespace API
 {
     public class Startup
     {
+        private const string m_policyName = "CorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,11 +30,20 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(opt =>
+            services.AddDbContext<DataContext>(options =>
             {
-                opt.UseSqlite(this.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlite(this.Configuration.GetConnectionString("DefaultConnection"));
             });
-            services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(m_policyName, policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                });
+            });
+            services.AddMvc(options => options.EnableEndpointRouting = false).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,18 +53,19 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                // Domyœlnie HSTS ustawione jest na 30 dni. Mo¿na to zmieniæ zgodnie z wymaganiami na produkcji.
+                // zob. https://aka.ms/aspnetcore-hsts
+                //app.UseHsts();
+            }
 
             // don't want to redirect to https. Also removed https address from launchSettings.json (API section, application url)
             //app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseCors(m_policyName);
+            
+            app.UseMvc();
         }
     }
 }
