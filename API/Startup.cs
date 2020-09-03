@@ -33,7 +33,8 @@ namespace API
             {
                 options.AddPolicy(m_policyName, policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5000");
+                    // taki adres jest w kursie, wiêc zostawiam, ale nie wiem czemu, jak moja apka startuje na porcie 5000
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
