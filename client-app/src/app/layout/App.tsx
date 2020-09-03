@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { Header, Icon, List } from 'semantic-ui-react';
 import axios from 'axios';
 
-
-import './App.css';
-
 class App extends Component {
     state = {
         values: []
