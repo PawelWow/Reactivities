@@ -8,6 +8,11 @@ import { Container } from 'semantic-ui-react';
 
 const App = () => {
     const [activities, setActivities] = useState<IActivity[]>([]);
+    const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
+
+    const onActivitySelect = (id: string) => {
+        setSelectedActivity(activities.filter(activity => activity.id === id)[0]);
+    };
 
     useEffect(() => {
         axios.get<IActivity[]>('http://localhost:5000/api/activities').then(response => {
@@ -20,7 +25,11 @@ const App = () => {
         <Fragment>
             <NavBar />
             <Container style={{ marginTop: '7em' }}>
-                <ActivityDashboard activities={activities} />
+                <ActivityDashboard
+                    activities={activities}
+                    selectActivity={onActivitySelect}
+                    selectedActivity={selectedActivity!}
+                />
             </Container>                
         </Fragment>
     );
