@@ -33,7 +33,7 @@ namespace API
             {
                 options.AddPolicy(m_policyName, policy =>
                 {
-                    // taki adres jest w kursie, wiêc zostawiam, ale nie wiem czemu, jak moja apka startuje na porcie 5000
+                    // client-app startuje pod tym adresem
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
                 });
             });
