@@ -13,14 +13,26 @@ const App = () => {
 
     const onActivitySelect = (id: string) => {
         setSelectedActivity(activities.filter(activity => activity.id === id)[0]);
+        setEditMode(false);
     };
 
     const onCreateFormOpen = () => {
         setSelectedActivity(null);
         setEditMode(true);
-    }
+    }    
 
-    
+    const onCreateActivity = (activity: IActivity) => {
+        setActivities([...activities, activity]);
+        setSelectedActivity(activity);
+        setEditMode(false);
+    };
+
+    const onEditActivity = (activity: IActivity) => {
+        // a tutaj spread jest potrzebny? Podobno filter zwróci nam już nową kopię tablicy, więc chyba nie trzeba go używać?
+        setActivities([...activities.filter(a => a.id !== activity.id), activity]);
+        setSelectedActivity(activity);
+        setEditMode(false);
+    };
 
     useEffect(() => {
         axios.get<IActivity[]>('http://localhost:5000/api/activities').then(response => {
@@ -40,6 +52,8 @@ const App = () => {
                     editMode={editMode}
                     setEditMode={setEditMode}
                     setSelectedActivity={setSelectedActivity}
+                    createACtivity={onCreateActivity}
+                    editActivity={onEditActivity}
                 />
             </Container>                
         </Fragment>
