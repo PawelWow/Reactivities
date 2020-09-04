@@ -34,6 +34,10 @@ const ActivityForm: React.FC<IProps> = ({setEditMode, activity: initialFormState
         setActivity({...activity, [name]: value })
     }
 
+    const onFormSubmit = () => {
+        console.log(activity);
+    }
+
     return(
         <Segment clearing>
             <Form>
@@ -43,7 +47,7 @@ const ActivityForm: React.FC<IProps> = ({setEditMode, activity: initialFormState
                 <Form.Input type="date" placeholder='Date' name='date' value={activity.date} onChange={onInputChange} />
                 <Form.Input placeholder='City' name='city' value={activity.city} onChange={onInputChange} />
                 <Form.Input placeholder='Venue' name='venue' value={activity.venue} onChange={onInputChange}/>
-                <Button floated='right' positive type='submit' content='Submit' />
+                <Button floated='right' positive type='submit' content='Submit' onClick={onFormSubmit} />
                 <Button
                     floated='right'
                     type='submit'
