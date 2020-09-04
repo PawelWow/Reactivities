@@ -20,7 +20,7 @@ const ActivityList: React.FC<IProps> = ({ activities, selectActivity }) => {
                             <Item.Description>
                                 {activity.description}
                                 {activity.city}, {activity.venue}
-                    </Item.Description>
+                            </Item.Description>
                             <Item.Extra>
                                 <Button 
                                     floated='right'
