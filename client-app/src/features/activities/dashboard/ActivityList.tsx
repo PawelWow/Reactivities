@@ -19,8 +19,8 @@ const ActivityList: React.FC<IProps> = ({ activities, selectActivity, deleteActi
                             <Item.Header as='a'>{activity.title}</Item.Header>
                             <Item.Meta>{activity.date}</Item.Meta>
                             <Item.Description>
-                                {activity.description}
-                                {activity.city}, {activity.venue}
+                                <div>{activity.description}</div>
+                                <div>{activity.city}, {activity.venue}</div>
                             </Item.Description>
                             <Item.Extra>
                                 <Button 
