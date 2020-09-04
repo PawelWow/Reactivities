@@ -9,6 +9,7 @@ import { Container } from 'semantic-ui-react';
 const App = () => {
     const [activities, setActivities] = useState<IActivity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
+    const [editMode, setEditMode] = useState(false);
 
     const onActivitySelect = (id: string) => {
         setSelectedActivity(activities.filter(activity => activity.id === id)[0]);
@@ -29,6 +30,8 @@ const App = () => {
                     activities={activities}
                     selectActivity={onActivitySelect}
                     selectedActivity={selectedActivity!}
+                    editMode={editMode}
+                    setEditMode={setEditMode}
                 />
             </Container>                
         </Fragment>
