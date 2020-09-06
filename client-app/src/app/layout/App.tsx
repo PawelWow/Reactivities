@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import axios from 'axios';
 import { IActivity } from '../models/activity';
 
 import NavBar from '../../features/nav/NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import { Container } from 'semantic-ui-react';
+import agent from '../api/agent';
 
 const App = () => {
     const [activities, setActivities] = useState<IActivity[]>([]);
@@ -19,29 +19,36 @@ const App = () => {
     const onCreateFormOpen = () => {
         setSelectedActivity(null);
         setEditMode(true);
+
     }    
 
     const onCreateActivity = (activity: IActivity) => {
-        setActivities([...activities, activity]);
-        setSelectedActivity(activity);
-        setEditMode(false);
+        agent.Activities.create(activity).then(() => {
+            setActivities([...activities, activity]);
+            setSelectedActivity(activity);
+            setEditMode(false);
+        });
     };
 
     const onEditActivity = (activity: IActivity) => {
+        agent.Activities.update(activity).then(() => {
         // a tutaj spread jest potrzebny? Podobno filter zwróci nam już nową kopię tablicy, więc chyba nie trzeba go używać?
         setActivities([...activities.filter(a => a.id !== activity.id), activity]);
         setSelectedActivity(activity);
         setEditMode(false);
+        });
     };
 
     const onDeleteActivity = (id: string) => {
-        setActivities([...activities.filter(a => a.id !== id)]);
-    }
+        agent.Activities.delete(id).then(()=>{
+            setActivities([...activities.filter(a => a.id !== id)]);
+        });
+    };
 
     useEffect(() => {
-        axios.get<IActivity[]>('http://localhost:5000/api/activities').then(response => {
+        agent.Activities.list().then(response => {
             let activities: IActivity[] = [];
-            response.data.forEach(activity => {
+            response.forEach(activity => {
                 activity.date = activity.date.split('.')[0];
                 activities.push(activity);
             });
