@@ -6,10 +6,13 @@ import ActivityDashboard from '../../features/activities/dashboard/ActivityDashb
 import { Container } from 'semantic-ui-react';
 import agent from '../api/agent';
 
+import LoadingComponent from './LoadingComponent';
+
 const App = () => {
     const [activities, setActivities] = useState<IActivity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
     const [editMode, setEditMode] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const onActivitySelect = (id: string) => {
         setSelectedActivity(activities.filter(activity => activity.id === id)[0]);
@@ -53,8 +56,12 @@ const App = () => {
                 activities.push(activity);
             });
             setActivities(activities);
-        });
+        }).then(() => setLoading(false));
     }, []);
+
+    if(loading) {
+        return <LoadingComponent content="Loading activities..." />
+    }
 
 
     return (
