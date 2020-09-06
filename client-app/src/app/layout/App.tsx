@@ -13,6 +13,7 @@ const App = () => {
     const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
     const [editMode, setEditMode] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
 
     const onActivitySelect = (id: string) => {
         setSelectedActivity(activities.filter(activity => activity.id === id)[0]);
@@ -26,26 +27,32 @@ const App = () => {
     }    
 
     const onCreateActivity = (activity: IActivity) => {
+        setSubmitting(true);
+
         agent.Activities.create(activity).then(() => {
             setActivities([...activities, activity]);
             setSelectedActivity(activity);
             setEditMode(false);
-        });
+        }).then(() => setSubmitting(false));
     };
 
     const onEditActivity = (activity: IActivity) => {
+        setSubmitting(true);
+
         agent.Activities.update(activity).then(() => {
         // a tutaj spread jest potrzebny? Podobno filter zwróci nam już nową kopię tablicy, więc chyba nie trzeba go używać?
         setActivities([...activities.filter(a => a.id !== activity.id), activity]);
         setSelectedActivity(activity);
         setEditMode(false);
-        });
+        }).then(() => setSubmitting(false));
     };
 
     const onDeleteActivity = (id: string) => {
+        setSubmitting(true);
+
         agent.Activities.delete(id).then(()=>{
             setActivities([...activities.filter(a => a.id !== id)]);
-        });
+        }).then(() => setSubmitting(false));
     };
 
     useEffect(() => {
@@ -78,6 +85,7 @@ const App = () => {
                     createACtivity={onCreateActivity}
                     editActivity={onEditActivity}
                     deleteActivity={onDeleteActivity}
+                    submitting={submitting}
                 />
             </Container>                
         </Fragment>
