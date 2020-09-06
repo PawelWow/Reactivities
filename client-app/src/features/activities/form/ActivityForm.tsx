@@ -59,9 +59,9 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
                 id: uuid()
             }
 
-            createActivity(newActivity);
+            createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`));
         }else {
-            editActivity(activity);
+            editActivity(activity).then(() => history.push(`/activities/${activity.id}`));
         }
     }
 
@@ -77,7 +77,7 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
                 <Form.Input placeholder='City' name='city' value={activity.city} onChange={onInputChange} />
                 <Form.Input placeholder='Venue' name='venue' value={activity.venue} onChange={onInputChange}/>
                 <Button loading={submitting} floated='right' positive type='submit' content='Submit' onClick={onFormSubmit} />
-                <Button
+                <Button                    
                     floated='right'
                     type='submit'
                     content='Cancel'

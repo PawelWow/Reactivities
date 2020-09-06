@@ -3,7 +3,6 @@ import { observable, action, computed, configure, runInAction } from 'mobx';
 import { IActivity } from '../models/activity';
 
 import agent from '../api/agent';
-import { IconGroup } from 'semantic-ui-react';
 
 configure({enforceActions: 'always'});
 
@@ -70,15 +69,15 @@ export class ActivityStore {
             
         }
 
-    }
+    };
 
     @action clearActivity = () => {
         this.activity = null;
-    }
+    };
 
     getActivity = (id: string) => {
         return this.activityRegistry.get(id);
-    }
+    };
 
     @action createActivity = async (activity: IActivity) => {
         this.submitting = true;
@@ -100,7 +99,7 @@ export class ActivityStore {
                 this.submitting = false;
             });
         }
-    }
+    };
 
     @action editActivity = async(activity: IActivity) => {
         this.submitting = true;
@@ -123,7 +122,7 @@ export class ActivityStore {
                 this.submitting = false;
             });
         }
-    }
+    };
 
     @action deleteActivity = async (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
         this.submitting = true;

@@ -11,7 +11,7 @@ interface IDetailParams {
 
 const ActivityDetails: React.FC<RouteComponentProps<IDetailParams>> = ({match, history}) => {
     const activityStore = useContext(ActivityStore);
-    const {activity: activity, loadActivity, loadingInitial } = activityStore;
+    const {activity, loadActivity, loadingInitial } = activityStore;
 
     useEffect(() => {
         loadActivity(match.params.id);
