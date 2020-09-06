@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Item, Button, Label, Segment } from 'semantic-ui-react';
+import { Item, Button, Label } from 'semantic-ui-react';
 
 import ActivityStore from '../../../app/stores/activityStore';
 import { IActivity } from '../../../app/models/activity';
