@@ -9,7 +9,6 @@ interface IProps {
     createACtivity: (activity: IActivity) => void;
     editActivity: (activity: IActivity) => void;
     submitting: boolean;
-
 }
 
 const ActivityForm: React.FC<IProps> = ({
