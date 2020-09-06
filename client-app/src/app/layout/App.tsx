@@ -1,18 +1,11 @@
-import React, { useState, useEffect, Fragment, SyntheticEvent, useContext } from 'react';
+import React, { useEffect, Fragment, useContext } from 'react';
 import {observer} from 'mobx-react-lite';
 
-import { IActivity } from '../models/activity';
-
 import ActivityStore from '../stores/activityStore';
-
 import NavBar from '../../features/nav/NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import { Container } from 'semantic-ui-react';
-import agent from '../api/agent';
-
 import LoadingComponent from './LoadingComponent';
-
-
 
 const App = () => {
     const activityStore = useContext(ActivityStore);
