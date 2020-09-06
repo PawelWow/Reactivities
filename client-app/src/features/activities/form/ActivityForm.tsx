@@ -1,5 +1,5 @@
 import React, {useState, FormEvent, useContext, useEffect} from 'react';
-import { Segment, Form, Button } from 'semantic-ui-react';
+import { Segment, Form, Button, Grid } from 'semantic-ui-react';
 import { IActivity } from '../../../app/models/activity';
 import { v4 as uuid} from 'uuid';
 import { observer } from 'mobx-react-lite';
@@ -68,23 +68,27 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
 
 
     return(
-        <Segment clearing>
-            <Form>
-                <Form.Input placeholder='Title' name='title' value={activity.title} onChange={onInputChange} />
-                <Form.TextArea rows={2} placeholder='Description' name='description' value={activity.description} onChange={onInputChange} />
-                <Form.Input placeholder='Category' name='category' value={activity.category} onChange={onInputChange} />
-                <Form.Input type="datetime-local" placeholder='Date' name='date' value={activity.date} onChange={onInputChange} />
-                <Form.Input placeholder='City' name='city' value={activity.city} onChange={onInputChange} />
-                <Form.Input placeholder='Venue' name='venue' value={activity.venue} onChange={onInputChange}/>
-                <Button loading={submitting} floated='right' positive type='submit' content='Submit' onClick={onFormSubmit} />
-                <Button                    
-                    floated='right'
-                    type='submit'
-                    content='Cancel'
-                    onClick={() => history.push('/activities')}
-                />
-            </Form>
-        </Segment>
+        <Grid>
+            <Grid.Column width={10}>
+                <Segment clearing>
+                    <Form onSubmit={onFormSubmit}>
+                        <Form.Input placeholder='Title' name='title' value={activity.title} onChange={onInputChange} />
+                        <Form.TextArea rows={2} placeholder='Description' name='description' value={activity.description} onChange={onInputChange} />
+                        <Form.Input placeholder='Category' name='category' value={activity.category} onChange={onInputChange} />
+                        <Form.Input type="datetime-local" placeholder='Date' name='date' value={activity.date} onChange={onInputChange} />
+                        <Form.Input placeholder='City' name='city' value={activity.city} onChange={onInputChange} />
+                        <Form.Input placeholder='Venue' name='venue' value={activity.venue} onChange={onInputChange}/>
+                        <Button loading={submitting} floated='right' positive type='submit' content='Submit' />
+                        <Button                    
+                            floated='right'
+                            type='submit'
+                            content='Cancel'
+                            onClick={() => history.push('/activities')}
+                        />
+                    </Form>
+                </Segment>
+            </Grid.Column>
+        </Grid>
     );
 };
 
