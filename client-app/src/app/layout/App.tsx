@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment, useContext } from 'react';
 import {observer} from 'mobx-react-lite';
-import { Route } from 'react-router-dom';
+import { Route, withRouter, RouteComponentProps } from 'react-router-dom';
 
 import ActivityStore from '../stores/activityStore';
 import NavBar from '../../features/nav/NavBar';
@@ -11,7 +11,7 @@ import ActivityDetails from '../../features/activities/details/ActivityDetails';
 import { Container } from 'semantic-ui-react';
 import LoadingComponent from './LoadingComponent';
 
-const App = () => {
+const App: React.FC<RouteComponentProps> = ({location}) => {
     const activityStore = useContext(ActivityStore);
 
     useEffect(() => {
@@ -29,11 +29,11 @@ const App = () => {
                 <Route exact path='/' component={HomePage} />
                 <Route exact path='/activities' component={ActivityDashboard} />
                 <Route path='/activities/:id' component={ActivityDetails} />
-                <Route path={['/createActivity', '/manage/:id']} component={ActivityForm} />
+                <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm} />
             </Container>                
         </Fragment>
     );
 }
 
 
-export default observer(App);
+export default withRouter(observer(App));
