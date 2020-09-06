@@ -1,6 +1,9 @@
-import React, { SyntheticEvent } from 'react';
+import React, { SyntheticEvent, useContext } from 'react';
+import {observer} from 'mobx-react-lite';
 import { Grid } from 'semantic-ui-react';
+
 import { IActivity } from '../../../app/models/activity';
+import ActivityStore from '../../../app/stores/activityStore';
 
 import ActivityList from './ActivityList';
 import ActivityDetails from '../details/ActivityDetails';
@@ -9,8 +12,6 @@ import ActivityForm from '../form/ActivityForm';
 interface IProps {
     activities: IActivity[],
     selectActivity: (id: string) => void;
-    selectedActivity: IActivity | null;
-    editMode: boolean;
     setEditMode: (editMode: boolean) => void;
     setSelectedActivity: (activity: IActivity | null) => void;
     createACtivity: (activity: IActivity) => void;
@@ -21,10 +22,6 @@ interface IProps {
 }
 
 const ActivityDashboard: React.FC<IProps> = ({
-    activities,
-    selectActivity,
-    selectedActivity,
-    editMode,
     setEditMode,
     setSelectedActivity,
     createACtivity,
@@ -33,12 +30,12 @@ const ActivityDashboard: React.FC<IProps> = ({
     submitting,
     target
  }) => {
+     const activityStore = useContext(ActivityStore);
+     const { editMode, selectedActivity } = activityStore;
     return (
         <Grid>
             <Grid.Column width={10}>
                 <ActivityList
-                    activities={activities}
-                    selectActivity={selectActivity}
                     deleteActivity={deleteActivity}
                     submitting={submitting}
                     target={target}
@@ -46,7 +43,6 @@ const ActivityDashboard: React.FC<IProps> = ({
             </Grid.Column>
             <Grid.Column width={6}>
                 {selectedActivity && !editMode && <ActivityDetails
-                    activity={selectedActivity}
                     setEditMode={setEditMode}
                     setSelectedActivity={setSelectedActivity}
                  /> }
@@ -64,4 +60,4 @@ const ActivityDashboard: React.FC<IProps> = ({
     );
 }
 
-export default ActivityDashboard;
+export default observer(ActivityDashboard);
