@@ -3,17 +3,15 @@ import { observable, action, computed, configure, runInAction } from 'mobx';
 import { IActivity } from '../models/activity';
 
 import agent from '../api/agent';
+import { IconGroup } from 'semantic-ui-react';
 
 configure({enforceActions: 'always'});
 
 export class ActivityStore {
     @observable activityRegistry = new Map();
-    @observable activities: IActivity[] = [];
-    @observable selectedActivity: IActivity | undefined;
+    @observable activity: IActivity | null = null;
     @observable loadingInitial = false;
-    @observable editMode = false;
     @observable submitting = false;
-
     @observable target: string = '';
 
     @computed get activitiesByDate() {
@@ -46,22 +44,40 @@ export class ActivityStore {
         }
     };
 
-    @action openCreateForm = () => {
-        this.selectedActivity = undefined;
-        this.editMode = true;
+    @action loadActivity = async(id: string) => {
+        let activity = this.getActivity(id);
+        if(activity) {
+            this.activity = activity;
+        }
+        else {
+            this.loadingInitial = true;
+            try {
+                activity = await agent.Activities.details(id);
+                runInAction('getting activity', () =>{
+                    this.activity = activity;
+                });
+            } catch (error) {
+                runInAction(() =>{
+                    console.log(error);
+                });
+                
+            } finally {
+                runInAction(() =>{
+                    this.loadingInitial = false;
+                });
+                
+            }
+            
+        }
+
     }
 
-    @action openEditForm = (id: string) => {
-        this.selectActivity = this.activityRegistry.get(id);
-        this.editMode = true;
+    @action clearActivity = () => {
+        this.activity = null;
     }
 
-    @action cancelFormOpen = () => {
-        this.editMode = false;
-    }
-
-    @action cancelSelectActivity = () => {
-        this.selectedActivity = undefined;
+    getActivity = (id: string) => {
+        return this.activityRegistry.get(id);
     }
 
     @action createActivity = async (activity: IActivity) => {
@@ -70,7 +86,7 @@ export class ActivityStore {
             await agent.Activities.create(activity);
             runInAction('creating new activity', () => {
                 this.activityRegistry.set(activity.id, activity);
-                this.selectedActivity = activity;
+                this.activity = activity;
             });
 
          
@@ -82,20 +98,18 @@ export class ActivityStore {
         } finally {
             runInAction(() => {
                 this.submitting = false;
-                this.editMode = false;
             });
         }
     }
 
     @action editActivity = async(activity: IActivity) => {
         this.submitting = true;
-        this.editMode = true;
 
         try {
             await agent.Activities.update(activity);
             runInAction('editing activity', () => {
                 this.activityRegistry.set(activity.id, activity);
-                this.selectedActivity = activity;
+                this.activity = activity;
             });
 
 
@@ -107,16 +121,9 @@ export class ActivityStore {
         }finally {
             runInAction(() => {
                 this.submitting = false;
-                this.editMode = false;
             });
-
         }
     }
-
-    @action selectActivity = (id: string) => {
-        this.selectedActivity = this.activityRegistry.get(id);
-        this.editMode = false;
-    };
 
     @action deleteActivity = async (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
         this.submitting = true;
