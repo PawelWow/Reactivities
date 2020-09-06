@@ -1,5 +1,7 @@
-import React, { useState, useEffect, Fragment, SyntheticEvent } from 'react';
+import React, { useState, useEffect, Fragment, SyntheticEvent, useContext } from 'react';
 import { IActivity } from '../models/activity';
+
+import ActivityStore from '../stores/activityStore';
 
 import NavBar from '../../features/nav/NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
@@ -8,7 +10,10 @@ import agent from '../api/agent';
 
 import LoadingComponent from './LoadingComponent';
 
+
+
 const App = () => {
+    const activityStore = useContext(ActivityStore);
     const [activities, setActivities] = useState<IActivity[]>([]);
     const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
     const [editMode, setEditMode] = useState(false);
