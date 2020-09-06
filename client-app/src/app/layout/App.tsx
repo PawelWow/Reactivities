@@ -16,52 +16,6 @@ import LoadingComponent from './LoadingComponent';
 
 const App = () => {
     const activityStore = useContext(ActivityStore);
-    const [activities, setActivities] = useState<IActivity[]>([]);
-    const [selectedActivity, setSelectedActivity] = useState<IActivity | null>(null);
-    const [editMode, setEditMode] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
-    const [target, setTarget] = useState('');
-
-    const onActivitySelect = (id: string) => {
-        setSelectedActivity(activities.filter(activity => activity.id === id)[0]);
-        setEditMode(false);
-    };
-
-    const onCreateFormOpen = () => {
-        setSelectedActivity(null);
-        setEditMode(true);
-
-    }    
-
-    const onCreateActivity = (activity: IActivity) => {
-        setSubmitting(true);
-
-        agent.Activities.create(activity).then(() => {
-            setActivities([...activities, activity]);
-            setSelectedActivity(activity);
-            setEditMode(false);
-        }).then(() => setSubmitting(false));
-    };
-
-    const onEditActivity = (activity: IActivity) => {
-        setSubmitting(true);
-
-        agent.Activities.update(activity).then(() => {
-        // a tutaj spread jest potrzebny? Podobno filter zwróci nam już nową kopię tablicy, więc chyba nie trzeba go używać?
-        setActivities([...activities.filter(a => a.id !== activity.id), activity]);
-        setSelectedActivity(activity);
-        setEditMode(false);
-        }).then(() => setSubmitting(false));
-    };
-
-    const onDeleteActivity = (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
-        setSubmitting(true);
-        setTarget(event.currentTarget.name);
-
-        agent.Activities.delete(id).then(()=>{
-            setActivities([...activities.filter(a => a.id !== id)]);
-        }).then(() => setSubmitting(false));
-    };
 
     useEffect(() => {
         activityStore.loadActivities();
@@ -71,22 +25,11 @@ const App = () => {
         return <LoadingComponent content="Loading activities..." />
     }
 
-
     return (
         <Fragment>
-            <NavBar openCreateForm={onCreateFormOpen} />
+            <NavBar />
             <Container style={{ marginTop: '7em' }}>
-                <ActivityDashboard
-                    activities={activityStore.activities}
-                    selectActivity={onActivitySelect}
-                    setEditMode={setEditMode}
-                    setSelectedActivity={setSelectedActivity}
-                    createACtivity={onCreateActivity}
-                    editActivity={onEditActivity}
-                    deleteActivity={onDeleteActivity}
-                    submitting={submitting}
-                    target={target}
-                />
+                <ActivityDashboard />
             </Container>                
         </Fragment>
     );

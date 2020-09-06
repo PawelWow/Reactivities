@@ -5,26 +5,15 @@ import { IActivity } from '../../../app/models/activity';
 
 import ActivityStore from '../../../app/stores/activityStore';
 
-interface IProps {
-    deleteActivity: (event: SyntheticEvent<HTMLButtonElement>, id: string) => void;
-    submitting: boolean;
-    target: string;
-    
-}
-
-const ActivityList: React.FC<IProps> = ({
-    deleteActivity,
-    submitting,
-    target
- }) => {
+const ActivityList = () => {
 
     const activityStore  = useContext(ActivityStore);
-    const {activities, selectActivity} = activityStore;
+    const {activitiesByDate, deleteActivity, selectActivity, target, submitting} = activityStore;
     return (
 
         <Segment clearing>
             <Item.Group divided>
-                {activities.map(activity => (
+                {activitiesByDate.map(activity => (
                     <Item>
                         <Item.Content>
                             <Item.Header as='a'>{activity.title}</Item.Header>
