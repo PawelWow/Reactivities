@@ -5,6 +5,7 @@ import { v4 as uuid} from 'uuid';
 import { observer } from 'mobx-react-lite';
 import { RouteComponentProps } from 'react-router-dom';
 import {Form as FinalForm, Field} from 'react-final-form';
+import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
 
 import ActivityStore from '../../../app/stores/activityStore';
 import TextInput from '../../../app/common/form/TextInput';
@@ -13,6 +14,21 @@ import SelectInput from '../../../app/common/form/SelectInput';
 import DateInput from '../../../app/common/form/DateInput';
 import { category } from '../../../app/common/options/categoryOptions';
 import { combineDateAndTime } from '../../../app/common/util/util';
+
+const validate = combineValidators({
+    title: isRequired({ message: 'The event title is required' }),
+    category: isRequired('Category'),
+    description: composeValidators(
+      isRequired('Description'),
+      hasLengthGreaterThan(4)({
+        message: 'Description needs to be at least 5 characters'
+      })
+    )(),
+    city: isRequired('City'),
+    venue: isRequired('Venue'),
+    date: isRequired('Date'),
+    time: isRequired('Time')
+});
 
 interface IDetailParams {
     id: string;
@@ -66,68 +82,76 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
         <Grid>
             <Grid.Column width={10}>
                 <Segment clearing>
-                    <FinalForm onSubmit={onFinalFormSubmit} render={({handleSubmit}) => (
-                        <Form onSubmit={handleSubmit} loading={isLoading}>
-                            <Field
-                                component={TextInput}
-                                placeholder='Title'
-                                name='title'
-                                value={activity.title}
-                            />
-                            <Field
-                                component={TextAreaInput}
-                                rows={3}
-                                placeholder='Description'
-                                name='description'
-                                value={activity.description}
-                            />
-                            <Field
-                                component={SelectInput}
-                                placeholder='Category'
-                                name='category'
-                                options={category}
-                                value={activity.category}
-                            />
-                            <Form.Group widths='equal'>
-                                <Field<Date>
-                                    component={DateInput}
-                                    type="datetime-local"
-                                    placeholder='Date'
-                                    name='date'
-                                    date
-                                    value={activity.date}
+                    <FinalForm
+                        validate={validate}
+                        initialValues={activity}
+                        onSubmit={onFinalFormSubmit}
+                        render={({ handleSubmit, invalid, pristine }) => (
+                            <Form onSubmit={handleSubmit} loading={isLoading}>
+                                <Field
+                                    component={TextInput}
+                                    placeholder='Title'
+                                    name='title'
+                                    value={activity.title}
                                 />
-                                <Field<Date>
-                                    component={DateInput}
-                                    type="datetime-local"
-                                    placeholder='Time'
-                                    name='time'
-                                    time
-                                    value={activity.time}
+                                <Field
+                                    component={TextAreaInput}
+                                    rows={3}
+                                    placeholder='Description'
+                                    name='description'
+                                    value={activity.description}
                                 />
-                            </Form.Group>
+                                <Field
+                                    component={SelectInput}
+                                    placeholder='Category'
+                                    name='category'
+                                    options={category}
+                                    value={activity.category}
+                                />
+                                <Form.Group widths='equal'>
+                                    <Field<Date>
+                                        component={DateInput}
+                                        type="datetime-local"
+                                        placeholder='Date'
+                                        name='date'
+                                        date
+                                        value={activity.date}
+                                    />
+                                    <Field<Date>
+                                        component={DateInput}
+                                        type="datetime-local"
+                                        placeholder='Time'
+                                        name='time'
+                                        time
+                                        value={activity.time}
+                                    />
+                                </Form.Group>
 
-                            <Field
-                                component={TextInput}
-                                placeholder='City'
-                                name='city'
-                                value={activity.city}
-                            />
-                            <Field
-                                component={TextInput}
-                                placeholder='Venue'
-                                name='venue'
-                                value={activity.venue}
-                            />
-                            <Button loading={submitting} disabled={isLoading} floated='right' positive type='submit' content='Submit' />
-                            <Button   
-                                disabled={isLoading}                 
-                                floated='right'
-                                type='submit'
-                                content='Cancel'
-                                onClick={() => history.push('/activities')}
-                            />
-                        </Form>
+                                <Field
+                                    component={TextInput}
+                                    placeholder='City'
+                                    name='city'
+                                    value={activity.city}
+                                />
+                                <Field
+                                    component={TextInput}
+                                    placeholder='Venue'
+                                    name='venue'
+                                    value={activity.venue}
+                                />
+                                <Button loading={submitting} disabled={isLoading} floated='right' positive type='submit' content='Submit' />
+                                <Button   
+                                    disabled={isLoading || invalid || pristine}                 
+                                    floated='right'
+                                    type='submit'
+                                    content='Cancel'
+                                    onClick={
+                                        activity.id 
+                                        ? () => history.push(`/activities/${activity.id}`)
+                                        : () => history.push('/activities')
+                                    }
+                                />
+                            </Form>
                     )} />
 
                 </Segment>

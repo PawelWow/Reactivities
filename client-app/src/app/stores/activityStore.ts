@@ -4,6 +4,7 @@ import { IActivity } from '../models/activity';
 import { history } from '../..';
 
 import agent from '../api/agent';
+import { toast } from 'react-toastify';
 
 configure({enforceActions: 'always'});
 
@@ -106,6 +107,7 @@ export class ActivityStore {
                 console.log(error);
             });
 
+            toast.error('Could not create actvity');
         } finally {
             runInAction(() => {
                 this.submitting = false;
@@ -128,6 +130,8 @@ export class ActivityStore {
             runInAction(() => {
                 console.log(error);
             });
+
+            toast.error('Could not edit actvity');
 
         }finally {
             runInAction(() => {
