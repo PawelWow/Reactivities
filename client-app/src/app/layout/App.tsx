@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import {observer} from 'mobx-react-lite';
 import { Route, withRouter, RouteComponentProps, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
+import { ToastContainer } from 'react-toastify';
 
 import NavBar from '../../features/nav/NavBar';
 import HomePage from '../../features/home/HomePage';
@@ -14,6 +15,7 @@ const App: React.FC<RouteComponentProps> = ({location}) => {
 
     return (
         <Fragment>
+            <ToastContainer position='bottom-right' />
             <Route exact path='/' component={HomePage} />
             <Route path={'/(.+)'} render={() => (
                 <Fragment>
