@@ -1,7 +1,15 @@
 import axios, { AxiosResponse } from 'axios';
 import { IActivity } from '../models/activity';
+import { history } from '../..';
 
 axios.defaults.baseURL = 'http://localhost:5000/api';
+
+axios.interceptors.response.use(undefined, error => {
+    if(error.response.status === 404) {
+        // dzięki temu nie trzeba na każdym komponencie tego sprawdzać, nie trzeba przerzucać errorów
+        history.push('/notfound');
+    }
+});
 
 const responseBody = (response: AxiosResponse) => response.data;
 
