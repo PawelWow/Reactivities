@@ -1,4 +1,5 @@
 using Application.Activities;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,7 +39,9 @@ namespace API
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
-            services.AddMvc(options => options.EnableEndpointRouting = false).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options => options.EnableEndpointRouting = false)
+                .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Create>())
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             
         }
