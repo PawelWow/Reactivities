@@ -1,6 +1,6 @@
-import React, {useState, FormEvent, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { Segment, Form, Button, Grid } from 'semantic-ui-react';
-import { IActivityFormValues } from '../../../app/models/activity';
+import { ActivityFormValues } from '../../../app/models/activity';
 import { v4 as uuid} from 'uuid';
 import { observer } from 'mobx-react-lite';
 import { RouteComponentProps } from 'react-router-dom';
@@ -22,71 +22,52 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
     match,
     history
 }) => {
+
     const activityStore = useContext(ActivityStore);
     const {
         createActivity,
         editActivity,
         submitting,
-        activity: initialFormState,
         loadActivity,
-        clearActivity
     } = activityStore;
 
-    const [activity, setActivity] = useState<IActivityFormValues>({
-        id: undefined,
-        title: '',
-        category: '',
-        description: '',
-        date: undefined,
-        time: undefined,
-        city: '',
-        venue: ''
-    });
+    const [activity, setActivity] = useState(new ActivityFormValues());
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if(match.params.id && activity.id) {
-            loadActivity(match.params.id).then(() => {
-                initialFormState && setActivity(initialFormState);
-            });
+        if(match.params.id) {
+            setIsLoading(true);
+            loadActivity(match.params.id)
+                .then(activity => {
+                    setActivity(new ActivityFormValues(activity));
+                })
+                .finally(() => setIsLoading(false));       
         }
-
-        return () => {
-            clearActivity();
-        }
-    }, [loadActivity, clearActivity, match.params.id, initialFormState, activity.id]);
-
-    const onInputChange = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = event.currentTarget;
-        setActivity({...activity, [name]: value });
-    }
-
-    // const onFormSubmit = () => {
-    //     if( activity.id.length === 0) {
-    //         let newActivity = {
-    //             ...activity,
-    //             id: uuid()
-    //         }
-
-    //         createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`));
-    //     }else {
-    //         editActivity(activity).then(() => history.push(`/activities/${activity.id}`));
-    //     }
-    // }
+    }, [loadActivity, match.params.id]);
 
     const onFinalFormSubmit = (values: any) => {
         const dateAndTime = combineDateAndTime(values.date, values.time);
         const {date, time, ...activity} = values;
         activity.date = dateAndTime;
-        console.log(activity);
+        if(!activity.id){
+            let newActivity = {
+                ...activity,
+                id: uuid()
+            };
+            createActivity(newActivity);
+        } else {
+            editActivity(activity);
+        }
     }
 
+    // TODO coś jest nie tak - przy edycji nei zczytuje values, pomimo, że value jest podane
 
     return(
         <Grid>
             <Grid.Column width={10}>
                 <Segment clearing>
                     <FinalForm onSubmit={onFinalFormSubmit} render={({handleSubmit}) => (
-                        <Form onSubmit={handleSubmit}>
+                        <Form onSubmit={handleSubmit} loading={isLoading}>
                             <Field
                                 component={TextInput}
                                 placeholder='Title'
@@ -138,8 +119,9 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
                                 name='venue'
                                 value={activity.venue}
                             />
-                            <Button loading={submitting} floated='right' positive type='submit' content='Submit' />
-                            <Button                    
+                            <Button loading={submitting} disabled={isLoading} floated='right' positive type='submit' content='Submit' />
+                            <Button   
+                                disabled={isLoading}                 
                                 floated='right'
                                 type='submit'
                                 content='Cancel'

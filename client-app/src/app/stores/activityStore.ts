@@ -1,6 +1,7 @@
 import { createContext, SyntheticEvent } from 'react';
 import { observable, action, computed, configure, runInAction } from 'mobx';
 import { IActivity } from '../models/activity';
+import { history } from '../..';
 
 import agent from '../api/agent';
 
@@ -56,26 +57,29 @@ export class ActivityStore {
         let activity = this.getActivity(id);
         if(activity) {
             this.activity = activity;
+            return activity;
         }
-        else {
-            this.loadingInitial = true;
-            try {
-                activity = await agent.Activities.details(id);
-                runInAction('getting activity', () =>{
-                    activity.date = new Date(activity.date);
-                    this.activity = activity;
-                });
-            } catch (error) {
-                runInAction(() =>{
-                    console.log(error);
-                });
-                
-            } finally {
-                runInAction(() =>{
-                    this.loadingInitial = false;
-                });                
-            }            
-        }
+
+        this.loadingInitial = true;
+        try {
+            activity = await agent.Activities.details(id);
+            runInAction('getting activity', () =>{
+                activity.date = new Date(activity.date);
+                this.activity = activity;
+                this.activityRegistry.set(activity.id, activity);
+            });
+
+            return activity;
+        } catch (error) {
+            runInAction(() =>{
+                console.log(error);
+            });
+            
+        } finally {
+            runInAction(() =>{
+                this.loadingInitial = false;
+            });
+        } 
 
     };
 
@@ -93,9 +97,9 @@ export class ActivityStore {
             await agent.Activities.create(activity);
             runInAction('creating new activity', () => {
                 this.activityRegistry.set(activity.id, activity);
-                this.activity = activity;
             });
 
+            history.push(`/activities/${activity.id}`);
          
         } catch (error) {
             runInAction(() => {
