@@ -5,9 +5,17 @@ import { history } from '../..';
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
 axios.interceptors.response.use(undefined, error => {
-    if(error.response.status === 404) {
+    const {status, data, config} = error.response;
+    const notFound = '/notfound';
+
+
+    if(status === 404) {
         // dzięki temu nie trzeba na każdym komponencie tego sprawdzać, nie trzeba przerzucać errorów
-        history.push('/notfound');
+        history.push(notFound);
+    }
+
+    if(status == 400 && config.method === 'get' && data.errors.hasOwnProperty('id')) {
+        history.push(notFound);
     }
 });
 
