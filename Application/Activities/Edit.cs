@@ -1,7 +1,9 @@
-﻿using FluentValidation;
+﻿using Application.Errors;
+using FluentValidation;
 using MediatR;
 using Persistance;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +53,7 @@ namespace Application.Activities
 
                 if(activity == null)
                 {
-                    throw new Exception("Could not find activity");
+                    throw new RestException(HttpStatusCode.NotFound, new { Activity = "Not found" });
                 }
 
                 activity.Title = request.Title ?? activity.Title;
@@ -61,9 +63,9 @@ namespace Application.Activities
                 activity.City = request.City ?? activity.City;
                 activity.Venue = request.Venue ?? activity.Venue;
 
-                var success = await m_context.SaveChangesAsync() > 0;
+                var isSuccess = await m_context.SaveChangesAsync() > 0;
 
-                if (success)
+                if (isSuccess)
                 {
                     return Unit.Value;
                 }

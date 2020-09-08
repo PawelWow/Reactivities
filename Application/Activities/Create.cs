@@ -61,9 +61,9 @@ namespace Application.Activities
 
                 // ma być nie async - zob. doc AddAsync()
                 m_context.Activities.Add(activity);
-                var success = await m_context.SaveChangesAsync() > 0;
+                var isSuccess = await m_context.SaveChangesAsync() > 0;
 
-                if(success)
+                if(isSuccess)
                 {
                     return Unit.Value;
                 }
