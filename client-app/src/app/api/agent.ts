@@ -6,9 +6,14 @@ import { toast } from 'react-toastify';
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
 axios.interceptors.response.use(undefined, error => {
+
+    // ale to jest słabe!!!
+    if(error.message === 'Network Error' && !error.response){
+        toast.error('Network error!');
+    }
+
     const {status, data, config} = error.response;
     const notFound = '/notfound';
-
 
     if(status === 404) {
         // dzięki temu nie trzeba na każdym komponencie tego sprawdzać, nie trzeba przerzucać errorów
