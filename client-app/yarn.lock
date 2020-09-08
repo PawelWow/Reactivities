@@ -1716,6 +1716,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-widgets@^4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@types/react-widgets/-/react-widgets-4.4.2.tgz#d1f77e81b4fcbbc277105bd3dcb269b07c39cad8"
+  integrity sha512-HPGzqVaNs8XErprzf0pJcRvbmbybcvAqfHoTYF42lXSV+FsFCc2Ler5Ew/PiMmnDwt17W6IjmiN4nYbVlfBQiA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^16.9.49":
   version "16.9.49"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.49.tgz#09db021cf8089aba0cdb12a49f8021a69cce4872"
