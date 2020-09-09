@@ -10,6 +10,10 @@
     <ProjectReference Include="..\Persistance\Persistance.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="obj\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>

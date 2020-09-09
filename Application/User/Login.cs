@@ -11,11 +11,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application
+namespace Application.User
 {
     public class Login
     { 
-        public class Query : IRequest<AppUser> 
+        public class Query : IRequest<User> 
         {
             public string Email { get; set; }
             public string Password { get; set; }
@@ -30,7 +30,7 @@ namespace Application
             }
         }
 
-        public class Handler : IRequestHandler<Query, AppUser>
+        public class Handler : IRequestHandler<Query, User>
         {
             private readonly UserManager<AppUser> m_userManager;
             private readonly SignInManager<AppUser> m_signInManager;
@@ -41,7 +41,7 @@ namespace Application
                 m_signInManager = signInManager;
             }
 
-            public async Task<AppUser> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<User> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await m_userManager.FindByEmailAsync(request.Email);
                 if (user == null)
@@ -53,7 +53,13 @@ namespace Application
                 if (result.Succeeded)
                 {
                     // TODO: generate token
-                    return user;
+                    return new User
+                    {
+                        DisplayName = user.DisplayName,
+                        Token = "Token to be",
+                        Username = user.UserName,
+                        Image = null
+                    };
                 }
 
                 throw new RestException(HttpStatusCode.Unauthorized);
