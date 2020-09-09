@@ -1,5 +1,6 @@
 ﻿using Application.interfaces;
 using Domain;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,11 @@ namespace Infrastructure.Security
 {
     public class JwtGenerator : IJwtGenerator
     {
+        private readonly SymmetricSecurityKey m_key;
+        public JwtGenerator(IConfiguration config)
+        {
+            m_key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+        }
         public string CreateToken(AppUser user)
         {
             var claims = new List<Claim>
@@ -19,8 +25,8 @@ namespace Infrastructure.Security
             };
 
             // generate credentials
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret key")); // ten klucz powinien być przechowywany na serwerze
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            
+            var credentials = new SigningCredentials(m_key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

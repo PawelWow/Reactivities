@@ -1,4 +1,5 @@
 ﻿using Application.Errors;
+using Application.interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -34,11 +35,13 @@ namespace Application.User
         {
             private readonly UserManager<AppUser> m_userManager;
             private readonly SignInManager<AppUser> m_signInManager;
+            private readonly IJwtGenerator m_jwtGenerator;
 
-            public Handler(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+            public Handler(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IJwtGenerator jwtGenerator)
             {
                 m_userManager = userManager;
                 m_signInManager = signInManager;
+                m_jwtGenerator = jwtGenerator;
             }
 
             public async Task<User> Handle(Query request, CancellationToken cancellationToken)
@@ -56,7 +59,7 @@ namespace Application.User
                     return new User
                     {
                         DisplayName = user.DisplayName,
-                        Token = "Token to be",
+                        Token = m_jwtGenerator.CreateToken(user),
                         Username = user.UserName,
                         Image = null
                     };

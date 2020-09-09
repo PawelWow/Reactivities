@@ -1,13 +1,11 @@
-using Application;
 using Application.User;
-using Domain;
-using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     public class UserController : BaseController
     {
         [HttpPost("login")]

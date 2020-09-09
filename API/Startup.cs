@@ -5,15 +5,20 @@ using Domain;
 using FluentValidation.AspNetCore;
 using Infrastructure.Security;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Persistance;
+using System.Text;
 
 namespace API
 {
@@ -44,14 +49,31 @@ namespace API
                 });
             });
             services.AddMediatR(typeof(List.Handler).Assembly);
-            services.AddMvc(options => options.EnableEndpointRouting = false)
-                .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Create>())
+            services.AddMvc(options =>
+            {
+                options.EnableEndpointRouting = false;
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+                
+             }).AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Create>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var builder = services.AddIdentityCore<AppUser>();
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<AppUser>>();
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateAudience = false,
+                    ValidateIssuer = false
+                };
+            });
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             
@@ -75,8 +97,12 @@ namespace API
             // don't want to redirect to https. Also removed https address from launchSettings.json (API section, application url)
             //app.UseHttpsRedirection();
 
+            app.UseRouting();
             app.UseCors(m_policyName);
-            
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseMvc();
         }
     }
