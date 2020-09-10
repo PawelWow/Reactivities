@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Item, Button, Label, Segment, Icon } from 'semantic-ui-react';
 import { format } from 'date-fns';
 
-import ActivityStore from '../../../app/stores/activityStore';
+import { RootStoreContext } from '../../../app/stores/rootStore';
 import { IActivity } from '../../../app/models/activity';
 
 interface IProps {
@@ -12,8 +12,8 @@ interface IProps {
 
 const ActivityListItem: React.FC<IProps> = ({ activity }) => {
 
-    const activityStore  = useContext(ActivityStore);
-    const {deleteActivity, target, submitting} = activityStore;
+    const rootStore  = useContext(RootStoreContext);
+    const {deleteActivity, target, submitting} = rootStore.activityStore;
 
     return(
         <Segment.Group>

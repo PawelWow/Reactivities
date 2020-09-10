@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import { observer } from 'mobx-react-lite';
-import ActivityStore from '../../../app/stores/activityStore';
+import { RootStoreContext } from '../../../app/stores/rootStore';
 import { RouteComponentProps } from 'react-router-dom';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
 
@@ -15,8 +15,8 @@ interface IDetailParams {
 };
 
 const ActivityDetails: React.FC<RouteComponentProps<IDetailParams>> = ({match, history}) => {
-    const activityStore = useContext(ActivityStore);
-    const {activity, loadActivity, loadingInitial } = activityStore;
+    const rootStore = useContext(RootStoreContext);
+    const {activity, loadActivity, loadingInitial } = rootStore.activityStore;
 
     useEffect(() => {
         loadActivity(match.params.id);

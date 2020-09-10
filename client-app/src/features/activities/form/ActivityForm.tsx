@@ -7,7 +7,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import {Form as FinalForm, Field} from 'react-final-form';
 import { combineValidators, isRequired, composeValidators, hasLengthGreaterThan } from 'revalidate';
 
-import ActivityStore from '../../../app/stores/activityStore';
+import { RootStoreContext } from '../../../app/stores/rootStore';
 import TextInput from '../../../app/common/form/TextInput';
 import TextAreaInput from '../../../app/common/form/TextAreaInput';
 import SelectInput from '../../../app/common/form/SelectInput';
@@ -39,13 +39,13 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
     history
 }) => {
 
-    const activityStore = useContext(ActivityStore);
+    const rootStore = useContext(RootStoreContext);
     const {
         createActivity,
         editActivity,
         submitting,
         loadActivity,
-    } = activityStore;
+    } = rootStore.activityStore;
 
     const [activity, setActivity] = useState(new ActivityFormValues());
     const [isLoading, setIsLoading] = useState(false);
