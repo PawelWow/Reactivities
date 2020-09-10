@@ -39,6 +39,7 @@ namespace API
         {
             services.AddDbContext<DataContext>(options =>
             {
+                options.UseLazyLoadingProxies();
                 options.UseSqlite(this.Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddCors(options =>
