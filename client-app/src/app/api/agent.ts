@@ -29,7 +29,7 @@ axios.interceptors.response.use(undefined, error => {
         toast.error('Server error - check the terminal to see more details!');
     }
 
-    throw error;
+    throw error.response;
 
 });
 

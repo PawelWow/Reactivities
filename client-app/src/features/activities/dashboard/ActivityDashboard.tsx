@@ -12,7 +12,7 @@ const ActivityDashboard = () => {
 
     useEffect(() => {
         loadActivities();
-    }, [rootStore]);
+    }, [loadActivities]);
 
     if(loadingInitial) {
         return <LoadingComponent content="Loading activities..." />
