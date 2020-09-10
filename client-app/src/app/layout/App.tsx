@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext, useEffect } from 'react';
 import {observer} from 'mobx-react-lite';
 import { Route, withRouter, RouteComponentProps, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
@@ -12,7 +12,26 @@ import ActivityDetails from '../../features/activities/details/ActivityDetails';
 import LoginForm from '../../features/user/LoginForm';
 import NotFound from './NotFound';
 
+import {RootStoreContext} from '../stores/rootStore';
+import LoadingComponent from './LoadingComponent';
+
 const App: React.FC<RouteComponentProps> = ({location}) => {
+
+    const rootStore = useContext(RootStoreContext);
+    const { setAppLoaded, token, appLoaded} = rootStore.commonStore;
+    const {getUser} = rootStore.userStore;
+
+    useEffect(() => {
+        if(token) {
+            getUser().finally(() => setAppLoaded());
+        } else {
+            setAppLoaded();
+        }
+    }, [getUser, setAppLoaded, token]);
+
+    if(!appLoaded){
+        return <LoadingComponent content='Loading...' />
+    }
 
     return (
         <Fragment>
