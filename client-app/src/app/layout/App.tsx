@@ -11,7 +11,7 @@ import ActivityForm from '../../features/activities/form/ActivityForm';
 import ActivityDetails from '../../features/activities/details/ActivityDetails';
 import LoginForm from '../../features/user/LoginForm';
 import NotFound from './NotFound';
-
+import ModalContainer from '../common/modals/ModalContainer';
 import {RootStoreContext} from '../stores/rootStore';
 import LoadingComponent from './LoadingComponent';
 
@@ -35,6 +35,7 @@ const App: React.FC<RouteComponentProps> = ({location}) => {
 
     return (
         <Fragment>
+            <ModalContainer />
             <ToastContainer position='bottom-right' />
             <Route exact path='/' component={HomePage} />
             <Route path={'/(.+)'} render={() => (

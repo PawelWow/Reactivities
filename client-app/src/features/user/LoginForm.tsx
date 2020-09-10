@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Form as FinalForm, Field} from 'react-final-form';
-import { Form, Button, Label } from 'semantic-ui-react';
+import { Form, Button, Header } from 'semantic-ui-react';
+import ErrorMessage from '../../app/common/form/ErrorMessage';
 import TextInput from '../../app/common/form/TextInput';
 import { RootStoreContext } from '../../app/stores/rootStore';
 import { IUserFormValues } from '../../app/models/user';
@@ -23,14 +24,14 @@ const LoginForm = ()  => {
             validate={validate}
             render={({
                 handleSubmit,
-                submitting,
-                form,
+                submitting,                
                 submitError,
                 invalid,
                 pristine,
-                dirtySinceLastSubmit
+                dirtySinceLastSubmit,
             }) => (
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit} error>
+                    <Header as ='h2' content='Login to reactivities' color='teal' textAlign='center' />
                     <Field 
                         name='email'
                         component={TextInput}
@@ -42,15 +43,15 @@ const LoginForm = ()  => {
                         placeholder='Password'
                         type='password'
                     /> 
-                    {submitError && <Label color='red' basic content={submitError.statusText} />}
+                    {submitError && <ErrorMessage error={submitError} text='Invalid username and password' />}
                     <br />
                     <Button 
                         disabled={(invalid && !dirtySinceLastSubmit) || pristine}
                         loading={submitting}
                         color='teal'
-                        content='Login'                        
-                    />          
-                    <pre>{JSON.stringify(form.getState(), null, 2)}</pre>     
+                        content='Login'   
+                        fluid                     
+                    />     
                 </Form>
             )}
         />
