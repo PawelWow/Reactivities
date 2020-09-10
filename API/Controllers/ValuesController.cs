@@ -1,7 +1,7 @@
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Persistance;
+using Persistence;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

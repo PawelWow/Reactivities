@@ -3,7 +3,7 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Persistance;
+using Persistence;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

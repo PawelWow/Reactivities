@@ -1,7 +1,7 @@
 ﻿using Application.Errors;
 using FluentValidation;
 using MediatR;
-using Persistance;
+using Persistence;
 using System;
 using System.Net;
 using System.Threading;

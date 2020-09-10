@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
-namespace Persistance.Migrations
+namespace Persistence.Migrations
 {
     public partial class ActivityAndSeedAdded : Migration
     {

@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Persistance.Migrations
+namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200831184616_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200831191732_SeedValues")]
+    partial class SeedValues
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,6 +27,23 @@ namespace Persistance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Values");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Value 1-1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Value 1-2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Value 1-3"
+                        });
                 });
 #pragma warning restore 612, 618
         }

@@ -11,7 +11,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Persistance;
+using Persistence;
 
 namespace Application.User
 {

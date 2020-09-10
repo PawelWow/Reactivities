@@ -2,7 +2,7 @@
 using AutoMapper;
 using Domain;
 using MediatR;
-using Persistance;
+using Persistence;
 using System;
 using System.Net;
 using System.Threading;

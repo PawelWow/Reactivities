@@ -2,7 +2,7 @@
 using Application.interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Persistance;
+using Persistence;
 using System;
 using System.Collections.Generic;
 using System.Net;
