@@ -1,6 +1,8 @@
-﻿using Domain;
+﻿using Application.interfaces;
+using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistance;
 using System;
 using System.Threading;
@@ -41,9 +43,12 @@ namespace Application.Activities
         {
             private readonly DataContext m_context;
 
-            public Handler(DataContext context)
+            private readonly IUserAccessor m_userAccessor;
+
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
                 m_context = context;
+                m_userAccessor = userAccessor;
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -61,6 +66,19 @@ namespace Application.Activities
 
                 // ma być nie async - zob. doc AddAsync()
                 m_context.Activities.Add(activity);
+
+                var user = await m_context.Users.SingleOrDefaultAsync(x => x.UserName == m_userAccessor.GetCurrentUsername());
+
+                var attendee = new UserActivity
+                {
+                    AppUser = user,
+                    Activity = activity,
+                    IsHost = true,
+                    DateJoined = DateTime.Now
+                };
+
+                m_context.UserActivities.Add(attendee);
+
                 var isSuccess = await m_context.SaveChangesAsync() > 0;
 
                 if(isSuccess)
