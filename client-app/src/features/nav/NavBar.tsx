@@ -6,7 +6,7 @@ import { RootStoreContext } from '../../app/stores/rootStore';
 
 const NavBar = () => {
     const rootStore = useContext(RootStoreContext);
-    const { isLoggedIn, user } = rootStore.userStore;
+    const { user, logout } = rootStore.userStore;
 
     return (
         <Menu fixed='top' inverted>
@@ -30,7 +30,7 @@ const NavBar = () => {
                                 text='My profile'
                                 icon='user'
                             />
-                            <Dropdown.Item onClick={() => {console.log('logout')}} text='Logout' icon='power' />
+                            <Dropdown.Item onClick={logout} text='Logout' icon='power' />
                         </Dropdown.Menu>
                         </Dropdown>
                     </Menu.Item>
