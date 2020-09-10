@@ -14,7 +14,7 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> List()
+        public async Task<ActionResult<List<ActivityDto>>> List()
         {
             // mo¿na z tokenem: return await m_mediator.Send(new List.Query(), cancellation);
 
