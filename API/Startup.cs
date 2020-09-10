@@ -1,6 +1,7 @@
 using API.Middleware;
 using Application.Activities;
 using Application.interfaces;
+using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;
 using Infrastructure.Security;
@@ -48,7 +49,19 @@ namespace API
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
                 });
             });
+
+
+            // Bo dsotawa³em b³ad:  "A possible object cycle was detected which is not supported. This can either be due to 
+            // a cycle or if the object depth is larger than the maximum allowed depth of 32"
+            // https://stackoverflow.com/questions/59199593/net-core-3-0-possible-object-cycle-was-detected-which-is-not-supported
+            // Mo¿na te¿ daæ flagê [JsonIgnore] nad danym obiektem - ten kontroler jednak zadzia³a globalnie.
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
+
             services.AddMediatR(typeof(List.Handler).Assembly);
+            services.AddAutoMapper(typeof(List.Handler));
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;

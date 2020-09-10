@@ -24,7 +24,7 @@ namespace Application.Activities
             public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
             {
                 // tutaj można wrzucić cancellation do ToListAsync...
-                var activities = await m_context.Activities.ToListAsync();
+                var activities = await m_context.Activities.Include(x => x.UserActivities).ThenInclude(x => x.AppUser).ToListAsync();
                 return activities;
             }
         }

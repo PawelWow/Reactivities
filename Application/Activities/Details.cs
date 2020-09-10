@@ -1,6 +1,8 @@
 ﻿using Application.Errors;
+using AutoMapper;
 using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistance;
 using System;
 using System.Net;
@@ -11,21 +13,27 @@ namespace Application.Activities
 {
     public class Details
     {
-        public class Query : IRequest<Activity>
+        public class Query : IRequest<ActivityDto>
         {
             public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Activity>
+        public class Handler : IRequestHandler<Query, ActivityDto>
         {
             private readonly DataContext m_context;
-            public Handler(DataContext context)
+
+            private readonly IMapper m_mapper;
+            public Handler(DataContext context, IMapper mapper)
             {
                 m_context = context;
+                m_mapper = mapper;
             }
-            public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ActivityDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activity = await m_context.Activities.FindAsync(request.Id);
+                var activity = await m_context.Activities
+                    .Include(x => x.UserActivities)
+                    .ThenInclude(x => x.AppUser)
+                    .SingleOrDefaultAsync(x => x.Id == request.Id);
 
 
                 if (activity == null)
@@ -33,7 +41,9 @@ namespace Application.Activities
                     throw new RestException(HttpStatusCode.NotFound, new { Activity = "Not found" });
                 }
 
-                return activity;
+                var activityToReturn = m_mapper.Map<Activity, ActivityDto>(activity);
+
+                return activityToReturn;
             }
         }
     }
