@@ -20,6 +20,7 @@ const LoginForm = ()  => {
         <FinalForm onSubmit={(values: IUserFormValues) => login(values).catch(error => ({
             [FORM_ERROR]: error
         }))}
+            validate={validate}
             render={({
                 handleSubmit,
                 submitting,
@@ -44,7 +45,7 @@ const LoginForm = ()  => {
                     {submitError && <Label color='red' basic content={submitError.statusText} />}
                     <br />
                     <Button 
-                        disabled={invalid && !dirtySinceLastSubmit || pristine}
+                        disabled={(invalid && !dirtySinceLastSubmit) || pristine}
                         loading={submitting}
                         color='teal'
                         content='Login'                        
