@@ -10,6 +10,8 @@ namespace Persistance
 
         public DbSet<Activity> Activities { get; set; }
 
+        public DbSet<UserActivity> UserActivities { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base( options)
         {
 
@@ -24,6 +26,12 @@ namespace Persistance
                     new Value { Id = 2, Name = "Value 1-2" },
                     new Value { Id = 3, Name = "Value 1-3" }
                 );
+
+            builder.Entity<UserActivity>(x => x.HasKey(ua => new { ua.AppUserId, ua.ActivityId }));
+
+            builder.Entity<UserActivity>().HasOne(u => u.AppUser).WithMany(a => a.UserActivities).HasForeignKey(u => u.AppUserId);
+
+            builder.Entity<UserActivity>().HasOne(a => a.Activity).WithMany(u => u.UserActivities).HasForeignKey(a => a.ActivityId);
         }
     }
 }
