@@ -12,6 +12,8 @@ namespace Persistence
 
         public DbSet<UserActivity> UserActivities { get; set; }
 
+        public DbSet<Photo> Photos { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base( options)
         {
 
