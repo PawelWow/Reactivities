@@ -4,11 +4,8 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Persistence;
-using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,13 +52,12 @@ namespace Application.User
                 var result = await m_signInManager.CheckPasswordSignInAsync(user, request.Password, false);
                 if (result.Succeeded)
                 {
-                    // TODO: generate token
                     return new User
                     {
                         DisplayName = user.DisplayName,
                         Token = m_jwtGenerator.CreateToken(user),
                         Username = user.UserName,
-                        Image = null
+                        Image = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
                     };
                 }
 

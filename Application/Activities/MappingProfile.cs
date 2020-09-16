@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain;
+using System.Linq;
 
 namespace Application.Activities
 {
@@ -10,7 +11,10 @@ namespace Application.Activities
             CreateMap<Activity, ActivityDto>();
             CreateMap<UserActivity, AttendeeDto>()
                 .ForMember(destination => destination.Username, options => options.MapFrom(source => source.AppUser.UserName))
-                .ForMember(destination => destination.DisplayName, options => options.MapFrom(source => source.AppUser.DisplayName));
+                .ForMember(destination => destination.DisplayName, options => options.MapFrom(source => source.AppUser.DisplayName))
+                .ForMember(destination => destination.Image, options => options.MapFrom(
+                    source => source.AppUser.Photos.FirstOrDefault(photo => photo.IsMain).Url)
+                );
         }
     }
 }

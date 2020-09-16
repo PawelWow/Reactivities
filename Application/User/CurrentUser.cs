@@ -2,6 +2,7 @@
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace Application.User
                     DisplayName = user.DisplayName,
                     Username = user.UserName,
                     Token = m_jwtGenerator.CreateToken(user),
-                    Image = null
+                    Image = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
                 };
 
             }
