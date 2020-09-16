@@ -19,6 +19,7 @@ const activityImageStyle = {
   };
 
 const ActivityDetailsHeader: React.FC<{activity: IActivity}> = ({activity}) => {
+    const host = activity.attendees.filter( x => x.isHost)[0];
     return (
         <Segment.Group>
         <Segment basic attached='top' style={{ padding: '0' }}>
@@ -38,7 +39,7 @@ const ActivityDetailsHeader: React.FC<{activity: IActivity}> = ({activity}) => {
                   />
                   <p>{format(activity.date, 'eeee do MMMM')}</p>
                   <p>
-                    Hosted by <strong>Bob</strong>
+                    Hosted by <strong>{host.displayName}</strong>
                   </p>
                 </Item.Content>
               </Item>
@@ -46,11 +47,19 @@ const ActivityDetailsHeader: React.FC<{activity: IActivity}> = ({activity}) => {
           </Segment>
         </Segment>
         <Segment clearing attached='bottom'>
-          <Button color='teal'>Join Activity</Button>
-          <Button>Cancel attendance</Button>
-          <Button as={Link} to={`/manage/${activity.id}`} color='orange' floated='right'>
-            Manage Event
-          </Button>
+          
+          
+          {activity.isHost ? (
+            <Button as={Link} to={`/manage/${activity.id}`} color='orange' floated='right'>
+              Manage Event
+            </Button>
+            ) : activity.isGoing ? (
+              <Button>Cancel attendance</Button>
+            ) : (
+              <Button color='teal'>Join Activity</Button>
+            )
+          }
+
         </Segment>
       </Segment.Group>
     );
