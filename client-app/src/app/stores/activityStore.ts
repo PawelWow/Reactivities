@@ -1,6 +1,6 @@
 import { SyntheticEvent } from 'react';
 import { observable, action, computed, runInAction } from 'mobx';
-import { IActivity } from '../models/activity';
+import { IActivity, IAttendee } from '../models/activity';
 import { history } from '../..';
 import { RootStore } from './rootStore';
 import agent from '../api/agent';
@@ -99,10 +99,22 @@ export default class ActivityStore {
         return this.activityRegistry.get(id);
     };
 
+    createAttendeesForNewActivity = () : IAttendee[] => {
+        const attendee = createAttendee(this.rootStore.userStore.user!);
+        attendee.isHost = true;
+        let attendees = [];
+        attendees.push(attendee);
+
+        return attendees;
+    }
+
     @action createActivity = async (activity: IActivity) => {
         this.submitting = true;
         try {
             await agent.Activities.create(activity);
+            const attendees = this.createAttendeesForNewActivity();
+            activity.attendees = attendees;
+            activity.isHost = true;
             runInAction('creating new activity', () => {
                 this.activityRegistry.set(activity.id, activity);
             });
