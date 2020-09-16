@@ -5,6 +5,7 @@ import { history } from '../..';
 import { RootStore } from './rootStore';
 import agent from '../api/agent';
 import { toast } from 'react-toastify';
+import { setActivityProps } from '../common/util/util';
 
 export default class ActivityStore {
     rootStore: RootStore;
@@ -35,11 +36,12 @@ export default class ActivityStore {
 
     @action loadActivities = async () => {
         this.loadingInitial = true;
+        
         try {
             const activities = await agent.Activities.list();
             runInAction('loading activities', () => {
                 activities.forEach(activity => {
-                    activity.date = new Date(activity.date);
+                    setActivityProps(activity, this.rootStore.userStore.user!)
                     this.activityRegistry.set(activity.id, activity);
                 });
             });
@@ -68,7 +70,7 @@ export default class ActivityStore {
         try {
             activity = await agent.Activities.details(id);
             runInAction('getting activity', () =>{
-                activity.date = new Date(activity.date);
+                setActivityProps(activity, this.rootStore.userStore.user!);
                 this.activity = activity;
                 this.activityRegistry.set(activity.id, activity);
             });
