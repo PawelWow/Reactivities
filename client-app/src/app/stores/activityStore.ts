@@ -6,7 +6,6 @@ import { RootStore } from './rootStore';
 import agent from '../api/agent';
 import { toast } from 'react-toastify';
 import { setActivityProps, createAttendee } from '../common/util/util';
-import { ADDRGETNETWORKPARAMS } from 'dns';
 
 export default class ActivityStore {
     rootStore: RootStore;
