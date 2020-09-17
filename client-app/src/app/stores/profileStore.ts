@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 
 import { RootStore } from './rootStore';
 import { action, observable, runInAction, computed } from 'mobx';
-import { IProfile } from '../models/profile';
+import { IPhoto, IProfile } from '../models/profile';
 import agent from '../api/agent';
 
 export default class ProfileStore {
@@ -17,6 +17,7 @@ export default class ProfileStore {
     @observable loadingProfile = true;
     
     @observable uploadingPhoto = false;
+    @observable loading = false;
 
     @computed get isCurrentUser() {
         if(this.rootStore.userStore.user && this.profile) {
@@ -67,6 +68,25 @@ export default class ProfileStore {
                 this.uploadingPhoto = false;
             });
             
+        }
+    }
+
+    @action setMainPhoto = async (photo: IPhoto) => {
+        this.loading = true;
+        try {
+            await agent.Profiles.setMainPhoto(photo.id);
+            runInAction(() => {
+                this.rootStore.userStore.user!.image = photo.url;
+                this.profile!.photos.find(p => p.isMain)!.isMain = false;
+                this.profile!.photos.find(p => p.id === photo.id)!.isMain = true;
+                this.profile!.image = photo.url;
+            });
+        } catch (error) {
+            toast.error('Problem setting photo as main');
+        }finally {
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     }
 }
