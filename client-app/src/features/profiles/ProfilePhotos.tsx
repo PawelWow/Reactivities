@@ -12,10 +12,12 @@ const ProfilePhotos = () => {
         uploadPhoto,
         uploadingPhoto,
         setMainPhoto,
-        loading
+        loading,
+        deletePhoto
     } = rootStore.profileStore;
     const [addPhotoMode, setAddPhotoMode] = useState(false);
-    const [target, setTarget] = useState<string | undefined>(undefined);
+    const [uploadTarget, setuploadTarget] = useState<string | undefined>(undefined);
+    const [deleteTarget, setDeleteTarget] = useState<string | undefined>(undefined);
 
     const onImageUpload = (photo: Blob) => {
         uploadPhoto(photo).then(() => setAddPhotoMode(false));
@@ -53,15 +55,33 @@ const ProfilePhotos = () => {
                                                 name={photo.id}
                                                 onClick={(e) => {                                                    
                                                     setMainPhoto(photo);
-                                                    setTarget(e.currentTarget.name)
+                                                    setuploadTarget(e.currentTarget.name);
                                                 }} 
-                                                loading={loading && target == photo.id}
+                                                loading={loading && uploadTarget === photo.id}
                                                 disabled={photo.isMain || loading}
                                                 basic
                                                 positive
                                                 content='Main'
                                             />
-                                            <Button basic negative icon='trash' />
+                                            <Button
+                                                name={photo.id}
+                                                disabled={photo.isMain || loading}
+                                                onClick={e => {
+                                                    deletePhoto(photo);
+                                                    setDeleteTarget(e.currentTarget.name);
+
+                                                    // bug: jeśli ustawiłem jakiś obrazek jako main to kliknięcie delete wywoła
+                                                    // loading indicator na przycisku obrazka głównego
+                                                    // solutio: albo osobne loadingi, albo wyczyścić target na undefined
+                                                    setuploadTarget(undefined);
+                                                    // przy tak małej logice możnaby jednak rozdzielić na loadingOnDelete 
+                                                    // oraz loadingOnUpload
+                                                }}
+                                                loading={loading && deleteTarget === photo.id}
+                                                basic
+                                                negative
+                                                icon='trash'
+                                            />
                                         </Button.Group>
                                     )}
                                 </Card>
