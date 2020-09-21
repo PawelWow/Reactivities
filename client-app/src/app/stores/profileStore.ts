@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 
 import { RootStore } from './rootStore';
 import { action, observable, runInAction, computed } from 'mobx';
-import { IPhoto, IProfile, IProfileFormValues } from '../models/profile';
+import { IPhoto, IProfile } from '../models/profile';
 import agent from '../api/agent';
 
 export default class ProfileStore {
@@ -107,20 +107,23 @@ export default class ProfileStore {
         }
     }
 
-    @action editProfile = async (newValues: IProfileFormValues) => {
+    @action editProfile = async (newValues: Partial<IProfile>) => {
 
         this.loading = true;
         try {
             await agent.Profiles.update(newValues);
             runInAction(() => {
-                this.profile!.displayName = newValues.displayName;
-                this.profile!.bio = newValues.bio;
-                
-                this.rootStore.userStore.user!.displayName = newValues.displayName;
+                if(this.rootStore.userStore.user!.displayName !== newValues.displayName ){
+                    this.rootStore.userStore.user!.displayName = newValues.displayName!;
+                }
+
+                this.profile = { ...this.profile!, ...newValues };
+
             });
             
             
         } catch (error) {
+            toast.error('Problem editing the profile.');
             console.log(error);
         } finally {
             runInAction(() => {

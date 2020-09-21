@@ -5,9 +5,10 @@ import { Form, Button, Header } from 'semantic-ui-react';
 import { combineValidators, isRequired } from 'revalidate';
 
 import { RootStoreContext } from '../../app/stores/rootStore';
-import { IProfileFormValues } from '../../app/models/profile';
+import { IProfile } from '../../app/models/profile';
 import TextInput from '../../app/common/form/TextInput';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
+import TextAreaInput from '../../app/common/form/TextAreaInput';
 
 const validate = combineValidators({
     displayName: isRequired('displayName')
@@ -18,7 +19,7 @@ const ProfileEditForm = () => {
     const { profile, editProfile } = rootStore.profileStore;
 
     return (
-        <FinalForm onSubmit={(values: IProfileFormValues) => editProfile(values).catch(error => ({
+        <FinalForm onSubmit={(newValues: IProfile) => editProfile(newValues).catch(error => ({
             [FORM_ERROR]: error
         }))}
             validate={validate}
@@ -41,7 +42,8 @@ const ProfileEditForm = () => {
 
                     <Field 
                         name='bio'
-                        component={TextInput}
+                        component={TextAreaInput}
+                        rows={3}
                         placeholder='Bio'
                         initialValue={profile!.bio}
                     />                      
@@ -60,5 +62,7 @@ const ProfileEditForm = () => {
         />
     );
 }
+
+// TODO bug: button disabled: have name 'bob'. Update to 'Bobby' - try to change to 'bob' again: button is disabled!
 
 export default ProfileEditForm;
