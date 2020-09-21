@@ -28,7 +28,6 @@ namespace Application.Profiles
             public CommandValidator()
             {
                 RuleFor(prop => prop.DisplayName).NotEmpty();
-                RuleFor(prop => prop.Bio).NotEmpty();
             }
         }
 
@@ -47,7 +46,7 @@ namespace Application.Profiles
                 var user = await m_context.Users.SingleOrDefaultAsync(u => u.UserName == m_userAccessor.GetCurrentUsername());
 
                 user.DisplayName = request.DisplayName;
-                user.Bio = request.Bio;
+                user.Bio = request.Bio ?? request.Bio;
 
                 var success = await m_context.SaveChangesAsync() > 0;
                 if (success)
