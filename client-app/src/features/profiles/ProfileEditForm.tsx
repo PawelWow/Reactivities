@@ -10,8 +10,7 @@ import TextInput from '../../app/common/form/TextInput';
 import ErrorMessage from '../../app/common/form/ErrorMessage';
 
 const validate = combineValidators({
-    displayName: isRequired('displayName'),
-    bio: isRequired('bio'),
+    displayName: isRequired('displayName')
 });
 
 const ProfileEditForm = () => {
