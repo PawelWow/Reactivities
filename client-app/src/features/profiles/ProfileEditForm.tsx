@@ -23,6 +23,7 @@ const ProfileEditForm = () => {
             [FORM_ERROR]: error
         }))}
             validate={validate}
+            initialValues={profile}
             render={({
                 handleSubmit,
                 submitting,                
@@ -37,7 +38,6 @@ const ProfileEditForm = () => {
                         name='displayName'
                         component={TextInput}
                         pceholder='Display name'
-                        initialValue={profile!.displayName}
                     /> 
 
                     <Field 
@@ -45,7 +45,6 @@ const ProfileEditForm = () => {
                         component={TextAreaInput}
                         rows={3}
                         placeholder='Bio'
-                        initialValue={profile!.bio}
                     />                      
                     {submitError && <ErrorMessage error={submitError} />}
                     <br />
@@ -62,7 +61,5 @@ const ProfileEditForm = () => {
         />
     );
 }
-
-// TODO bug: button disabled: have name 'bob'. Update to 'Bobby' - try to change to 'bob' again: button is disabled!
 
 export default ProfileEditForm;
