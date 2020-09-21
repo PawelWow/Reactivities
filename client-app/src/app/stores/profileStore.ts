@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 
 import { RootStore } from './rootStore';
 import { action, observable, runInAction, computed } from 'mobx';
-import { IPhoto, IProfile } from '../models/profile';
+import { IPhoto, IProfile, IProfileFormValues } from '../models/profile';
 import agent from '../api/agent';
 
 export default class ProfileStore {
@@ -101,6 +101,28 @@ export default class ProfileStore {
             toast.error('Problem deleting the photo.');
             console.log(error);
         }finally {
+            runInAction(() => {
+                this.loading = false;
+            });
+        }
+    }
+
+    @action editProfile = async (newValues: IProfileFormValues) => {
+
+        this.loading = true;
+        try {
+            await agent.Profiles.update(newValues);
+            runInAction(() => {
+                this.profile!.displayName = newValues.displayName;
+                this.profile!.bio = newValues.bio;
+                
+                this.rootStore.userStore.user!.displayName = newValues.displayName;
+            });
+            
+            
+        } catch (error) {
+            console.log(error);
+        } finally {
             runInAction(() => {
                 this.loading = false;
             });

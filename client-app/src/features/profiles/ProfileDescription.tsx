@@ -1,19 +1,22 @@
 import React, { useContext, useState } from 'react';
-import { Card, Header, Tab, Image, Button, Grid } from 'semantic-ui-react';
+import { Header, Tab, Button, Grid } from 'semantic-ui-react';
+import { observer } from 'mobx-react-lite';
+
 import { RootStoreContext } from '../../app/stores/rootStore';
+import ProfileEditForm from './ProfileEditForm';
 
 const ProfileDescription = () => {
 
     const [editMode, setEditMode] = useState(false);
 
     const rootStore = useContext(RootStoreContext);
-    const { isCurrentUser } = rootStore.profileStore;
+    const { isCurrentUser, profile } = rootStore.profileStore;
 
     return (
         <Tab.Pane>
             <Grid>
                 <Grid.Column width={16} style={{paddingBottom: 0}}>
-                    <Header floated='left' icon='user'>About (user_name)</Header>
+                    <Header floated='left' icon='user'>About {profile!.displayName} </Header>
                     { 
                         isCurrentUser && (
                             <Button
@@ -28,10 +31,10 @@ const ProfileDescription = () => {
                 <Grid.Column width={16}>
                     {
                         editMode ? (
-                        <div>Formularz edycji</div>
+                        <ProfileEditForm />
                         ) : (
                         <div>
-                            BIO usera
+                            {profile!.bio}
                         </div>
                         )
                     }
@@ -41,4 +44,4 @@ const ProfileDescription = () => {
     );
 }
 
-export default ProfileDescription;
+export default observer(ProfileDescription);
