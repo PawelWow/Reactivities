@@ -8,6 +8,10 @@ import { toast } from 'react-toastify';
 import { setActivityProps, createAttendee } from '../common/util/util';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
+// TODO bug: Error: Cannot send data if the connection is not in the 'Connected' State
+// Choose an activity, then leave the activity, then choose another activity. Happend after add activity in useEffec 
+// dependency in ActivityDetailedChats
+
 export default class ActivityStore {
     rootStore: RootStore;
     constructor(rootStore: RootStore) {
@@ -23,7 +27,7 @@ export default class ActivityStore {
 
     @observable.ref hubConnection: HubConnection | null = null;
 
-    @action createHubConnection = () => {
+    @action createHubConnection = (activityId: string) => {
         this.hubConnection = new HubConnectionBuilder()
             .withUrl('http://localhost:5000/chat', {
                 accessTokenFactory: () => this.rootStore.commonStore.token!
@@ -34,18 +38,28 @@ export default class ActivityStore {
         this.hubConnection
             .start()
             .then(() => console.log(this.hubConnection!.state))
+            .then(() => {
+                console.log('Join group attempt');
+                this.hubConnection!.invoke('AddToGroup', activityId);
+            })
             .catch(error => console.log('Error establishing connection: ', error));
 
         this.hubConnection.on('ReceiveComment', comment => {
             runInAction(() => {
                 this.activity!.comments.push(comment);
             });
+        });
 
+        this.hubConnection?.on('Send', message => {
+            toast.info(message);
         });
     };
 
     @action stopHubConnection = () => {
-        this.hubConnection!.stop();
+        this.hubConnection!.invoke('RemoveFromGroup', this.activity!.id).then(() => {
+            this.hubConnection!.stop();
+        }).then(() => console.log('Connection sopped...')).catch(error => console.log(error));
+
     }
 
     @action addComment = async (values: any) => {

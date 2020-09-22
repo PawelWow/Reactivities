@@ -19,9 +19,9 @@ const ActivityDetailsChats = () => {
   } = rootStore.activityStore;
 
     useEffect(() => {
-      createHubConnection();
+      createHubConnection(activity!.id);
       return () => stopHubConnection();
-    }, [ createHubConnection, stopHubConnection]);
+    }, [ createHubConnection, stopHubConnection, activity ]);
 
     return (
         <Fragment>
