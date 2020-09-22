@@ -18,12 +18,33 @@ namespace API.SignalR
 
         public async Task SendComment(Create.Command command)
         {
-            var username = base.Context.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-            command.Username = username;
+            string userName = this.GetUsername();
+            command.Username = userName;
 
             var comment = await m_mediator.Send(command);
 
-            await base.Clients.All.SendAsync("ReceiveComment", comment);
+            await base.Clients.Group(command.ActivityId.ToString()).SendAsync("ReceiveComment", comment);
+        }
+
+        public async Task AddToGroup(string groupName)
+        {
+            await base.Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+            string userName = this.GetUsername();
+            await base.Clients.Group(groupName).SendAsync("Send", $"{userName} has joined the group");
+        }
+
+        public async Task RemoveFromGroup(string groupName)
+        {
+            await base.Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+
+            string userName = this.GetUsername();
+            await base.Clients.Group(groupName).SendAsync("Send", $"{userName} has left the group");
+        }
+
+        private string GetUsername()
+        {
+            return base.Context.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }
