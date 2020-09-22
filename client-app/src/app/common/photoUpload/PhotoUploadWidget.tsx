@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { Fragment, useEffect, useState } from 'react';
-import { Button, Grid, Header, Image } from 'semantic-ui-react';
+import { Button, Grid, Header } from 'semantic-ui-react';
 
 import PhotoWidgetDropzone from './PhotoWidgetDropzone';
 import PhotoWidgetCropper from './PhotoWidgetCropper';
