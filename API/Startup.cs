@@ -51,7 +51,7 @@ namespace API
                 options.AddPolicy(m_policyName, policy =>
                 {
                     // client-app startuje pod tym adresem
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000").AllowCredentials();
                 });
             });
 
