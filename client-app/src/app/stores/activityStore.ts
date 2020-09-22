@@ -45,6 +45,21 @@ export default class ActivityStore {
         this.hubConnection!.stop();
     }
 
+    @action addComment = async (values: any) => {
+        values.activityId = this.activity!.id;
+
+        try {
+            // SendComment is the name of method of Reactivities\API\SignalR\ChatHub.cs class.
+            await this.hubConnection!.invoke('SendComment', values)
+        } catch (error) {
+            runInAction(() => {
+                console.log(error);
+                toast.error('Could not send the comment...');
+            });
+
+        }
+    }
+
     @computed get activitiesByDate() {
         return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
     };
