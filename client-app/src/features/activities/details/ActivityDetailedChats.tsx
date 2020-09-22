@@ -1,6 +1,11 @@
 import React, { Fragment, useContext, useEffect } from 'react';
 import { Segment, Header, Form, Button, Comment } from 'semantic-ui-react';
+import {Form as FinalForm, Field} from 'react-final-form';
+import { observer } from 'mobx-react-lite';
+
 import { RootStoreContext } from '../../../app/stores/rootStore';
+import { Link } from 'react-router-dom';
+import TextAreaInput from '../../../app/common/form/TextAreaInput';
 
 const ActivityDetailsChats = () => {
 
@@ -30,47 +35,50 @@ const ActivityDetailsChats = () => {
           </Segment>
           <Segment attached>
             <Comment.Group>
-              <Comment>
-                <Comment.Avatar src='/assets/user.png' />
+              { activity && activity.comments && activity.comments.map((comment) => (
+                <Comment key={comment.id}>
+                <Comment.Avatar src={comment.image || '/assets/user.png'} />
                 <Comment.Content>
-                  <Comment.Author as='a'>Matt</Comment.Author>
+                  <Comment.Author as={Link} to={`/profile/${comment.username}`}>{comment.displayName}</Comment.Author>
                   <Comment.Metadata>
-                    <div>Today at 5:42PM</div>
+                    <div>{comment.createdAt}</div>
                   </Comment.Metadata>
-                  <Comment.Text>How artistic!</Comment.Text>
-                  <Comment.Actions>
-                    <Comment.Action>Reply</Comment.Action>
-                  </Comment.Actions>
+                  <Comment.Text>{comment.body}</Comment.Text>
                 </Comment.Content>
-              </Comment>
+                </Comment>  
+
+              ))}
+
+              <FinalForm
+                onSubmit={addComment}
+                render={({
+                  handleSubmit,
+                  submitting,
+                  form
+                }) => (
+                  <Form onSubmit={() => handleSubmit()!.then(() => form.reset())}>
+                    <Field 
+                      name='body'
+                      component={TextAreaInput}
+                      rows={2}
+                      placeholder='Add your coment here'
+                    />
+                    <Button
+                      content='Add Reply'
+                      labelPosition='left'
+                      icon='edit'
+                      primary
+                      loading={submitting}
+                    />
+                  </Form>
+                )}
+              />
     
-              <Comment>
-                <Comment.Avatar src='/assets/user.png' />
-                <Comment.Content>
-                  <Comment.Author as='a'>Joe Henderson</Comment.Author>
-                  <Comment.Metadata>
-                    <div>5 days ago</div>
-                  </Comment.Metadata>
-                  <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-                  <Comment.Actions>
-                    <Comment.Action>Reply</Comment.Action>
-                  </Comment.Actions>
-                </Comment.Content>
-              </Comment>
-    
-              <Form reply>
-                <Form.TextArea />
-                <Button
-                  content='Add Reply'
-                  labelPosition='left'
-                  icon='edit'
-                  primary
-                />
-              </Form>
+
             </Comment.Group>
           </Segment>
         </Fragment>
       );
 };
 
-export default ActivityDetailsChats;
+export default observer(ActivityDetailsChats);

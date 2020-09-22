@@ -53,7 +53,7 @@ export default class ActivityStore {
 
         try {
             // SendComment is the name of method of Reactivities\API\SignalR\ChatHub.cs class.
-            await this.hubConnection!.invoke('SendComment', values)
+            await this.hubConnection!.invoke('SendComment', values);
         } catch (error) {
             runInAction(() => {
                 console.log(error);
