@@ -39,26 +39,54 @@ export default class ActivityStore {
             .start()
             .then(() => console.log(this.hubConnection!.state))
             .then(() => {
+                
+                if(this.hubConnection!.state !== 'Connected'){
+                    // REV: quick fix - not shure it is ok but works
+                    // for some reason invokes are done too fast and errors occur because of 'Connecting' state
+                    // repro: choose activity, leave activity page, choose activity again
+                    // seems like start().then() does not means the connection is established
+                    // check ActivityDetailedChats useEffects and its dependencies 
+
+                    console.log('No actions because of invalid state.');
+                    return;
+                }
+
                 console.log('Join group attempt');
-                this.hubConnection!.invoke('AddToGroup', activityId);
+                this.hubConnection!.invoke('AddToGroup', activityId).catch(error => {
+                    // REV: handling error is the solution too, but I know the state is incorrect so I return earlier
+                    // just for case leave this handler because there may be another error
+                    console.log('Join group attempt failed');
+                    console.log(error);
+                });
+
             })
             .catch(error => console.log('Error establishing connection: ', error));
 
-        this.hubConnection.on('ReceiveComment', comment => {
-            runInAction(() => {
-                this.activity!.comments.push(comment);
+            this.hubConnection.on('ReceiveComment', comment => {
+                runInAction(() => {
+                    this.activity!.comments.push(comment);
+                });
             });
-        });
+    
+            this.hubConnection?.on('Send', message => {
+                toast.info(message);
+            });
 
-        this.hubConnection?.on('Send', message => {
-            toast.info(message);
-        });
     };
 
     @action stopHubConnection = () => {
+        // REV Error: Cannot send data if the connection is not in the 'Connected' State
+        // repro: choose activity, leave activity page, choose activity again
+        // handle error here
+
         this.hubConnection!.invoke('RemoveFromGroup', this.activity!.id).then(() => {
             this.hubConnection!.stop();
-        }).then(() => console.log('Connection sopped...')).catch(error => console.log(error));
+        }).then(() => console.log('Connection stopped...'))
+        .catch(error => {
+            console.log("Could not stop connection");
+            console.log(error);
+        });
+
 
     }
 
