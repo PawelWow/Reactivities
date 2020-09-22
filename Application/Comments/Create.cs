@@ -54,6 +54,7 @@ namespace Application.Comments
                     CreateAt = DateTime.Now
                 };
 
+                activity.Comments.Add(comment);
 
                 bool isSuccess = await m_context.SaveChangesAsync() > 0;
                 if (isSuccess)
