@@ -1,4 +1,5 @@
 using API.Middleware;
+using API.SignalR;
 using Application.Activities;
 using Application.interfaces;
 using AutoMapper;
@@ -21,12 +22,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace API
 {
     public class Startup
     {
         private const string m_policyName = "CorsPolicy";
+        private const string m_chatPath = "/chat";
 
         public Startup(IConfiguration configuration)
         {
@@ -64,6 +67,7 @@ namespace API
 
             services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddAutoMapper(typeof(List.Handler));
+            services.AddSignalR();
             services.AddMvc(options =>
             {
                 options.EnableEndpointRouting = false;
@@ -98,6 +102,21 @@ namespace API
                     ValidateAudience = false,
                     ValidateIssuer = false
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrWhiteSpace(accessToken) && path.StartsWithSegments(m_chatPath))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
@@ -130,6 +149,12 @@ namespace API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>(m_chatPath);
+            });
 
             app.UseMvc();
         }
