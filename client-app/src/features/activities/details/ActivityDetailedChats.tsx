@@ -2,6 +2,7 @@ import React, { Fragment, useContext, useEffect } from 'react';
 import { Segment, Header, Form, Button, Comment } from 'semantic-ui-react';
 import {Form as FinalForm, Field} from 'react-final-form';
 import { observer } from 'mobx-react-lite';
+import { formatDistance } from 'date-fns';
 
 import { RootStoreContext } from '../../../app/stores/rootStore';
 import { Link } from 'react-router-dom';
@@ -41,7 +42,7 @@ const ActivityDetailsChats = () => {
                 <Comment.Content>
                   <Comment.Author as={Link} to={`/profile/${comment.username}`}>{comment.displayName}</Comment.Author>
                   <Comment.Metadata>
-                    <div>{comment.createdAt}</div>
+                    <div>{ formatDistance(comment.createAt, new Date())}</div>
                   </Comment.Metadata>
                   <Comment.Text>{comment.body}</Comment.Text>
                 </Comment.Content>

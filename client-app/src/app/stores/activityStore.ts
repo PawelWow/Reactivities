@@ -156,6 +156,7 @@ export default class ActivityStore {
             await agent.Activities.create(activity);
             const attendees = this.createAttendeesForNewActivity();
             activity.attendees = attendees;
+            activity.comments = [];
             activity.isHost = true;
             runInAction('creating new activity', () => {
                 this.activityRegistry.set(activity.id, activity);
