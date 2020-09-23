@@ -14,11 +14,11 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<List.ActivitiesEnvelope>> List(int? limit, int? offset)
+        public async Task<ActionResult<List.ActivitiesEnvelope>> List(int? limit, int? offset, bool isGoing, bool isHost, DateTime? startDate)
         {
             // mo¿na z tokenem: return await m_mediator.Send(new List.Query(), cancellation);
 
-            return await base.Mediator.Send(new List.Query(limit, offset));
+            return await base.Mediator.Send(new List.Query(limit, offset, isGoing, isHost, startDate));
         }
 
         [HttpGet("{id}")]
