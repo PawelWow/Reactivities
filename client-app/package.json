@@ -28,7 +28,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-toastify": "^6.0.8",
-    "react-widgets": "^4.5.0",
+    "react-widgets": "^4.6.0",
     "react-widgets-date-fns": "^4.1.0",
     "revalidate": "^1.2.0",
     "semantic-ui-css": "^2.4.1",
