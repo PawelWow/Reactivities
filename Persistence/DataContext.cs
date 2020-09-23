@@ -48,7 +48,7 @@ namespace Persistence
                     .OnDelete(DeleteBehavior.Restrict);
 
                 builder.HasOne(o => o.Target)
-                    .WithMany(f => f.Followings)
+                    .WithMany(f => f.Followers)
                     .HasForeignKey(o => o.TargetId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
