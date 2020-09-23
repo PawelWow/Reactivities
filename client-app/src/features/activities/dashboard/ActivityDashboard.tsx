@@ -42,8 +42,9 @@ const ActivityDashboard = () => {
                     loadMore={onGetNext}
                     hasMore={!loadingNext && page + 1 < totalPages}
                     initialLoad={false}
-                />
-                <ActivityList />
+                >
+                    <ActivityList />
+                </InfiniteScroll>
 
             </Grid.Column>
             <Grid.Column width={6}>
