@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {observer} from 'mobx-react-lite';
-import { Button, Grid, Loader } from 'semantic-ui-react';
+import { Grid, Loader } from 'semantic-ui-react';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { RootStoreContext } from '../../../app/stores/rootStore';

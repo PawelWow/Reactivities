@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
 import { IPhoto, IProfile } from '../models/profile';
 
+// delay to see loadings (in test scenarios, not production!)
+const DELAY_MS = 1000;
+
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
 axios.interceptors.request.use((config) => {
@@ -52,10 +55,10 @@ const sleep = (ms: number) => (response: AxiosResponse) =>
     new Promise<AxiosResponse>(resolve => setTimeout(()=> resolve(response), ms));
 
 const requests = {
-    get: (url: string) => axios.get(url).then(sleep(1000)).then(responseBody),
-    post: (url: string, body: {}) => axios.post(url, body).then(sleep(1000)).then(responseBody),
-    put: (url: string, body: {}) => axios.put(url, body).then(sleep(1000)).then(responseBody),
-    del: (url: string) => axios.delete(url).then(sleep(1000)).then(responseBody),
+    get: (url: string) => axios.get(url).then(sleep(DELAY_MS)).then(responseBody),
+    post: (url: string, body: {}) => axios.post(url, body).then(sleep(DELAY_MS)).then(responseBody),
+    put: (url: string, body: {}) => axios.put(url, body).then(sleep(DELAY_MS)).then(responseBody),
+    del: (url: string) => axios.delete(url).then(sleep(DELAY_MS)).then(responseBody),
     postForm: (url: string, file: Blob) => {
         let formData = new FormData();
         formData.append('File', file);
@@ -66,8 +69,8 @@ const requests = {
 };
 
 const Activities = {
-    list: (limit?: number, page?: number): Promise<IActivitiesEnvelope> => 
-        requests.get(`/activities?=${limit}&offset=${page ? page * limit! : 0}`),
+    list: (params: URLSearchParams): Promise<IActivitiesEnvelope> => 
+        axios.get('/activities', {params: params}).then(sleep(DELAY_MS)).then(responseBody),
 
     details: (id: string) => requests.get(`/activities/${id}`),
     create: (activity: IActivity) => requests.post('/activities', activity),
