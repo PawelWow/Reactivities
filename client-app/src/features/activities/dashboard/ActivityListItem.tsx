@@ -68,7 +68,6 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                     loading={target === activity.id && submitting}
                     onClick={(e) => deleteActivity(e, activity.id)}
                 />
-                <Label basic content='Category' />
             </Segment>
         </Segment.Group>
 
