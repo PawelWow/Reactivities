@@ -14,7 +14,7 @@ namespace Application.Activities
                 .ForMember(destination => destination.DisplayName, options => options.MapFrom(source => source.AppUser.DisplayName))
                 .ForMember(destination => destination.Image, options => options.MapFrom(
                     source => source.AppUser.Photos.FirstOrDefault(photo => photo.IsMain).Url)
-                );
+                ).ForMember(destination => destination.Following, options => options.MapFrom<FollowingResolver>());
         }
     }
 }
