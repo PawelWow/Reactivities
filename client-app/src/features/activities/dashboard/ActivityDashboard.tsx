@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {observer} from 'mobx-react-lite';
-import { Button, Grid } from 'semantic-ui-react';
+import { Button, Grid, Loader } from 'semantic-ui-react';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { RootStoreContext } from '../../../app/stores/rootStore';
 import LoadingComponent from '../../../app/layout/LoadingComponent';
@@ -35,18 +36,20 @@ const ActivityDashboard = () => {
     return (
         <Grid>
             <Grid.Column width={10}>
-                <ActivityList />
-                <Button
-                    floated='right'
-                    content='More...'
-                    positive
-                    disabled={totalPages === page + 1}
-                    onClick={onGetNext}
-                    loading={loadingNext}
+                <InfiniteScroll 
+                    pageStart={0}
+                    loadMore={onGetNext}
+                    hasMore={!loadingNext && page + 1 < totalPages}
+                    initialLoad={false}
                 />
+                <ActivityList />
+
             </Grid.Column>
             <Grid.Column width={6}>
                 <h2>Activity filters</h2>                
+            </Grid.Column>
+            <Grid.Column width={10}>
+                <Loader active={loadingNext} />             
             </Grid.Column>
         </Grid>
     );
