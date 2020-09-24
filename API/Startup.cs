@@ -173,6 +173,21 @@ namespace API
             // don't want to redirect to https. Also removed https address from launchSettings.json (API section, application url)
             //app.UseHttpsRedirection();
 
+            // all 4 must be used before usedefaultfiles and usestaticfies. the policy must be applaied to that files
+            app.UseXContentTypeOptions();
+            app.UseReferrerPolicy(options => options.NoReferrer());
+            app.UseXXssProtection(options => options.EnabledWithBlockMode());
+            app.UseXfo(options => options.Deny());
+            app.UseCspReportOnly(options => options
+                                        .BlockAllMixedContent()
+                                        .StyleSources(s => s.Self())
+                                        .FontSources(s => s.Self())
+                                        .FormActions(s => s.Self())
+                                        .FrameAncestors(s => s.Self())
+                                        .ImageSources(s => s.Self())
+                                        .ScriptSources(s => s.Self())
+            );
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
