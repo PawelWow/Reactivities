@@ -9,6 +9,7 @@ import TextInput from '../../app/common/form/TextInput';
 import { RootStoreContext } from '../../app/stores/rootStore';
 import { IUserFormValues } from '../../app/models/user';
 import SocialLogin from './SocialLogin';
+import { observer } from 'mobx-react-lite';
 
 const validate = combineValidators({
     email: isRequired('email'),
@@ -17,7 +18,7 @@ const validate = combineValidators({
 
 const LoginForm = ()  => {
     const rootStore = useContext(RootStoreContext);
-    const { login, fbLogin } = rootStore.userStore
+    const { login, fbLogin, loading } = rootStore.userStore
 
     return (
         <FinalForm onSubmit={(values: IUserFormValues) => login(values).catch(error => ({
@@ -55,11 +56,11 @@ const LoginForm = ()  => {
                         fluid                     
                     />   
                     <Divider horizontal>Or</Divider>  
-                    <SocialLogin fbCallback={fbLogin} />
+                    <SocialLogin loading={loading} fbCallback={fbLogin} />
                 </Form>
             )}
         />
     );
 };
 
-export default LoginForm;
+export default observer(LoginForm);
