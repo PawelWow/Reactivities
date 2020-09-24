@@ -74,6 +74,15 @@ namespace API.Controllers
             return Ok("Email conirmed - you can now login");
         }
 
+        [AllowAnonymous]
+        [HttpGet("resetEmailVerification")]
+        public async Task<ActionResult> ResendEmailVerification([FromQuery]ResendEmailVerification.Query query)
+        {
+            query.Origin = base.Request.Headers["origin"];
+            await base.Mediator.Send(query);
+
+            return Ok("Email verification link sent - please check your inbox");
+        }
 
         private void SetTokenCookie(string refreshToken)
         {
