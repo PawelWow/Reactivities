@@ -61,7 +61,7 @@ namespace API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("verifyEmail")]
         public async Task<ActionResult> VerifyEmail(ConfirmEmail.Command command)
         {
             var result = await Mediator.Send(command);
