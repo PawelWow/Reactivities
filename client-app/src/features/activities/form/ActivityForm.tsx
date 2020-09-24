@@ -139,9 +139,16 @@ const ActivityForm: React.FC<RouteComponentProps<IDetailParams>> = ({
                                     name='venue'
                                     value={activity.venue}
                                 />
-                                <Button loading={submitting} disabled={isLoading} floated='right' positive type='submit' content='Submit' />
+                                <Button 
+                                    loading={submitting} 
+                                    disabled={ isLoading || invalid || pristine } 
+                                    floated='right'
+                                    positive
+                                    type='submit'
+                                    content='Submit'
+                                />
                                 <Button   
-                                    disabled={isLoading || invalid || pristine}                 
+                                    disabled={isLoading }                 
                                     floated='right'
                                     type='submit'
                                     content='Cancel'
