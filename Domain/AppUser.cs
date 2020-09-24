@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Domain
 {
@@ -12,10 +13,21 @@ namespace Domain
 
         public virtual ICollection<UserActivity> UserActivities { get; set; }
 
+        /// <summary>
+        /// Photos collection
+        /// </summary>
         public virtual ICollection<Photo> Photos { get; set; }
 
         public virtual ICollection<UserFollowing> Followings { get; set; }
 
         public virtual ICollection<UserFollowing> Followers { get; set; }
+
+        /// <summary>
+        /// Initializes <see cref="Photos"/>
+        /// </summary>
+        public AppUser()
+        {
+            this.Photos = new Collection<Photo>();
+        }
     }
 }
