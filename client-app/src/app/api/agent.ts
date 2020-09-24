@@ -8,7 +8,7 @@ import { IPhoto, IProfile } from '../models/profile';
 // delay to see loadings (in test scenarios, not production!)
 const DELAY_MS = 1000;
 
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.request.use((config) => {
     const token = window.localStorage.getItem('jwt');
