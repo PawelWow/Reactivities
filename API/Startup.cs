@@ -154,6 +154,9 @@ namespace API
             // don't want to redirect to https. Also removed https address from launchSettings.json (API section, application url)
             //app.UseHttpsRedirection();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseRouting();
             app.UseCors(m_policyName);
 
@@ -164,6 +167,7 @@ namespace API
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>(m_chatPath);
+                endpoints.MapFallbackToController("index", "Fallback");
             });
 
             app.UseMvc();
