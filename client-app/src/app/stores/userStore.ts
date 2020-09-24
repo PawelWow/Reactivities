@@ -36,6 +36,10 @@ export default class UserStore {
         history.push('/');
     }
 
+    @action fbLogin = async (response: any) => {
+        console.log(response);
+    }
+
     @action register = async (values: IUserFormValues) => {
         try {
             const user = await agent.User.register(values);
