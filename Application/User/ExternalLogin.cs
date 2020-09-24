@@ -66,7 +66,10 @@ namespace Application.User
                     DisplayName = userInfo.Name,
                     Id = userInfo.Id,
                     Email = userInfo.Email,
-                    UserName = $"fb_{userInfo.Id}"
+                    UserName = $"fb_{userInfo.Id}",
+
+                    //facebook confirmed
+                    EmailConfirmed = true
                 };
 
                 var photo = new Photo

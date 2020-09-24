@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
@@ -10,6 +11,7 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -17,12 +19,14 @@ namespace Application.User
 {
     public class Register
     {
-        public class Command : IRequest<User>
+        public class Command : IRequest
         {
             public string DisplayName { get; set; }
             public string Username { get; set; }
             public string Email { get; set; }
             public string Password { get; set; }
+
+            public string Origin { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
@@ -36,20 +40,20 @@ namespace Application.User
             }
         }
 
-        public class Handler : IRequestHandler<Command, User>
+        public class Handler : IRequestHandler<Command>
         {
             private readonly DataContext m_context;
             private readonly UserManager<AppUser> m_userManager;
-            private readonly IJwtGenerator m_jwtGenerator;
+            private readonly IEmailSender m_emailSender;
 
-            public Handler(DataContext context, UserManager<AppUser> userManager, IJwtGenerator jwtGenerator)
+            public Handler(DataContext context, UserManager<AppUser> userManager,  IEmailSender emailSender)
             {
                 m_context = context;
                 m_userManager = userManager;
-                m_jwtGenerator = jwtGenerator;
+                m_emailSender = emailSender;
             }
 
-            public async Task<User> Handle(Command request, CancellationToken cancellation)
+            public async Task<Unit> Handle(Command request, CancellationToken cancellation)
             {
                 if(await m_context.Users.Where(x => x.Email == request.Email).AnyAsync())
                 {
@@ -68,16 +72,25 @@ namespace Application.User
                     UserName = request.Username
                 };
 
-                var refreshToken = m_jwtGenerator.GenerateRefreshtoken();
-                user.RefreshTokens.Add(refreshToken);
 
                 var result = await m_userManager.CreateAsync(user, request.Password);
-                if(result.Succeeded)
+                if(!result.Succeeded)
                 {
-                    return new User(user, m_jwtGenerator, refreshToken.Token);
+                    throw new Exception("Problem creating user!");
                 }
 
-                throw new Exception("Problem creating user!");
+                var token = await m_userManager.GenerateEmailConfirmationTokenAsync(user);
+                token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+                var verifyUrl = $"{request.Origin}/user/vierifyEmail?token={token}&email={request.Email}";
+
+                var message = $"<p>Click the link below to verify your email address:</p><p><a href='{verifyUrl}'>{verifyUrl}</a></p>";
+
+                await m_emailSender.SendEmailAsync(request.Email, "Please verify email address", message);
+
+                return Unit.Value;
+
+
             }
             /// <summary>
             /// Upraszcza rzucanie errorów rózniących się tylko treścią błedów
@@ -89,8 +102,5 @@ namespace Application.User
                 return new RestException(HttpStatusCode.BadRequest, errors);
             }
         }
-
-
-
     }
 }

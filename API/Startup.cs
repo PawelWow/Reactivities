@@ -6,6 +6,7 @@ using Application.Profiles;
 using AutoMapper;
 using Domain;
 using FluentValidation.AspNetCore;
+using Infrastructure.Email;
 using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
@@ -103,10 +104,13 @@ namespace API
              }).AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Create>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            var builder = services.AddIdentityCore<AppUser>();
+            var builder = services.AddIdentityCore<AppUser>(options => {
+                options.SignIn.RequireConfirmedEmail = true;
+            });
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<AppUser>>();
+            identityBuilder.AddDefaultTokenProviders();
 
             services.AddAuthorization(options =>
             {
@@ -152,8 +156,10 @@ namespace API
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.AddScoped<IProfileReader, ProfileReader>();
             services.AddScoped<IFacebookAccessor, FacebookAccessor>();
+            services.AddScoped<IEmailSender, EmailSender>();
             services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
             services.Configure<FacebookAppSettings>(Configuration.GetSection("Authentication:Facebook"));
+            services.Configure<SendGridSettings>(Configuration.GetSection("SendGrid"));
 
         }
 
