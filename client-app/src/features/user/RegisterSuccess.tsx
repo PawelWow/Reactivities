@@ -35,3 +35,5 @@ const RegisterSuccess: React.FC<RouteComponentProps> = ({location}) => {
         </Segment>
     )
 }
+
+export default RegisterSuccess;
