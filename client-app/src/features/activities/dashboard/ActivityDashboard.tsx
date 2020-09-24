@@ -4,9 +4,9 @@ import { Grid, Loader } from 'semantic-ui-react';
 import InfiniteScroll from 'react-infinite-scroller';
 
 import { RootStoreContext } from '../../../app/stores/rootStore';
-import LoadingComponent from '../../../app/layout/LoadingComponent';
 import ActivityList from './ActivityList';
 import ActivityFilters from './ActivityFilters';
+import ActivityListItemPlaceholder from './ActivityListItemPlaceholder';
 
 const ActivityDashboard = () => {
     const rootStore = useContext(RootStoreContext);
@@ -30,21 +30,20 @@ const ActivityDashboard = () => {
         loadActivities();
     }, [loadActivities]);
 
-    if(loadingInitial && page === 0) {
-        return <LoadingComponent content="Loading activities..." />
-    }
-
     return (
         <Grid>
             <Grid.Column width={10}>
-                <InfiniteScroll 
+                { loadingInitial && page === 0 ? <ActivityListItemPlaceholder /> : (
+                    <InfiniteScroll 
                     pageStart={0}
                     loadMore={onGetNext}
                     hasMore={!loadingNext && page + 1 < totalPages}
                     initialLoad={false}
-                >
-                    <ActivityList />
-                </InfiniteScroll>
+                    >
+                        <ActivityList />
+                    </InfiniteScroll>
+                )}
+
 
             </Grid.Column>
             <Grid.Column width={6}>
