@@ -7,13 +7,6 @@
     <meta name="theme-color" content="#000000" />
     <meta name="description"
           content="Web site created using create-react-app" />
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
-    <link async
-          rel="stylesheet"
-          href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
-    <script async
-            src="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -31,9 +24,14 @@
     <title>Reactivities</title>
 </head>
   <body>
+    <styles>
+      .active-spinner {
+        display: flex !important;
+      }
+    </styles>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
-      <div class="ui active transition visible inverted dimmer" style="display: flex !important;">
+      <div class="ui active transition visible inverted dimmer active-spinner">
         <div class="content">
           <div class="ui text loader">Loading...</div>
         </div>
