@@ -31,13 +31,12 @@ namespace Application.User
             {
                 var user = await m_userManager.FindByNameAsync(m_userAccessor.GetCurrentUsername());
 
-                return new User
-                {
-                    DisplayName = user.DisplayName,
-                    Username = user.UserName,
-                    Token = m_jwtGenerator.CreateToken(user),
-                    Image = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
-                };
+                var refreshToken = m_jwtGenerator.GenerateRefreshtoken();
+                user.RefreshTokens.Add(refreshToken);
+
+                await m_userManager.UpdateAsync(user);
+
+                return new User(user, m_jwtGenerator, refreshToken.Token);
 
             }
         }
