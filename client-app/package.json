@@ -17,6 +17,7 @@
     "axios": "^0.20.0",
     "date-fns": "^2.0.0-alpha.13",
     "final-form": "^4.20.1",
+    "jquery": "^3.5.1",
     "mobx": "^5.15.6",
     "mobx-react-lite": "^2.2.1",
     "react": "^16.13.1",
