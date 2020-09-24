@@ -28,7 +28,15 @@ axios.interceptors.response.use(undefined, error => {
         toast.error('Network error!');
     }
 
-    const {status, data, config} = error.response;
+    const {status, data, config, headers} = error.response;
+
+    if(status === 401 && isTokenExpiredRespone(headers['www-authenticate'])){
+        console.log('here!');
+        window.localStorage.removeItem('jwt');
+        history.push('/');
+        toast.info('Your session has expired. Login again.');
+    }
+
     const notFound = '/notfound';
 
     if(status === 404) {
@@ -47,6 +55,20 @@ axios.interceptors.response.use(undefined, error => {
     throw error.response;
 
 });
+
+// very primitive way to say the token is expired.
+// In fact I've got header: e.g. Bearer error="invalid_token", error_description="The token expired at '09/24/2020 08:19:04'
+// another version of API could have: Bearer error="invalid_token", error_description="The token is expired"
+// So let's say the token is expired when that text (header) contains 'invalid_token' and 'expired' keywords.
+// However it is very poor solution because the text can change
+const isTokenExpiredRespone = (header: string): boolean => {
+    var headerText = header.toLocaleLowerCase();
+
+    const conditionInvalidToken = "invalid_token";
+    const conditionExpired = "expired";
+
+    return headerText.includes(conditionInvalidToken) && headerText.includes(conditionExpired);
+}
 
 const responseBody = (response: AxiosResponse) => response.data;
 

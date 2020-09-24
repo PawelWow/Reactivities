@@ -9,7 +9,6 @@ import HomePage from '../../features/home/HomePage';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import ActivityForm from '../../features/activities/form/ActivityForm';
 import ActivityDetails from '../../features/activities/details/ActivityDetails';
-import LoginForm from '../../features/user/LoginForm';
 import NotFound from './NotFound';
 import ModalContainer from '../common/modals/ModalContainer';
 import {RootStoreContext} from '../stores/rootStore';
