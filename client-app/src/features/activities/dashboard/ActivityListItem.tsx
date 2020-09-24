@@ -60,14 +60,17 @@ const ActivityListItem: React.FC<IProps> = ({ activity }) => {
                     content='View'
                     color='blue'                                    
                 />
-                <Button 
-                    name={activity.id}
-                    floated='right'
-                    content='Delete'
-                    color='red'
-                    loading={target === activity.id && submitting}
-                    onClick={(e) => deleteActivity(e, activity.id)}
-                />
+                { activity.isHost && 
+                    <Button 
+                        name={activity.id}
+                        floated='right'
+                        content='Delete'
+                        color='red'
+                        loading={target === activity.id && submitting}
+                        onClick={(e) => deleteActivity(e, activity.id)}
+                    />
+                }
+
             </Segment>
         </Segment.Group>
 
