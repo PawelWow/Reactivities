@@ -50,18 +50,17 @@ namespace Application.User
                 }
 
                 var result = await m_signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-                if (result.Succeeded)
+                if (!result.Succeeded)
                 {
-                    return new User
-                    {
-                        DisplayName = user.DisplayName,
-                        Token = m_jwtGenerator.CreateToken(user),
-                        Username = user.UserName,
-                        Image = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
-                    };
+                    throw new RestException(HttpStatusCode.Unauthorized);
                 }
 
-                throw new RestException(HttpStatusCode.Unauthorized);
+                var refreshToken = m_jwtGenerator.GenerateRefreshtoken();
+                user.RefreshTokens.Add(refreshToken);
+
+                await m_userManager.UpdateAsync(user);
+
+                return new User(user, m_jwtGenerator, refreshToken.Token);
             }
         }
     

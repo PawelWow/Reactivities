@@ -3,12 +3,7 @@ using Application.interfaces;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,18 +38,20 @@ namespace Application.User
                 }
 
                 var user = await m_userManager.FindByEmailAsync(userInfo.Email);
-                if (user == null)
+
+                var refreshToken = m_jwtGenerator.GenerateRefreshtoken();
+
+                if (user != null)
                 {
-                    user = await this.CreateUser(userInfo);
+                    user.RefreshTokens.Add(refreshToken);
+                    await m_userManager.UpdateAsync(user);
+
+                } else
+                {
+                    user = await this.CreateUser(userInfo, refreshToken);
                 }
 
-                return new User
-                {
-                    DisplayName = user.DisplayName,
-                    Token = m_jwtGenerator.CreateToken(user),
-                    Username = user.UserName,
-                    Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
-                };
+                return new User(user, m_jwtGenerator, refreshToken.Token);
             }
 
             /// <summary>
@@ -62,7 +59,7 @@ namespace Application.User
             /// </summary>
             /// <param name="userInfo">User descriptor</param>
             /// <returns>User</returns>
-            private async Task<AppUser> CreateUser(FacebookUserInfo userInfo)
+            private async Task<AppUser> CreateUser(FacebookUserInfo userInfo, Domain.RefreshToken refreshToken)
             {
                 AppUser user = new AppUser
                 {
@@ -81,6 +78,7 @@ namespace Application.User
                 };
 
                 user.Photos.Add(photo);
+                user.RefreshTokens.Add(refreshToken);
 
                 var result = await m_userManager.CreateAsync(user);
                 if (!result.Succeeded)

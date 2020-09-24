@@ -22,6 +22,8 @@ namespace Domain
 
         public virtual ICollection<UserFollowing> Followers { get; set; }
 
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
+
         /// <summary>
         /// Initializes <see cref="Photos"/>
         /// </summary>
