@@ -1,5 +1,5 @@
 import { SyntheticEvent } from 'react';
-import { observable, action, computed, runInAction, reaction } from 'mobx';
+import { observable, action, computed, runInAction, reaction, toJS } from 'mobx';
 import { IActivity, IAttendee } from '../models/activity';
 import { history } from '../..';
 import { RootStore } from './rootStore';
@@ -195,7 +195,9 @@ export default class ActivityStore {
         let activity = this.getActivity(id);
         if(activity) {
             this.activity = activity;
-            return activity;
+
+            // toJS - deep clone to have observable
+            return  toJS(activity);
         }
 
         this.loadingInitial = true;
