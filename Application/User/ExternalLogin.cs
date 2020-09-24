@@ -3,12 +3,7 @@ using Application.interfaces;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,7 +59,7 @@ namespace Application.User
             /// </summary>
             /// <param name="userInfo">User descriptor</param>
             /// <returns>User</returns>
-            private async Task<AppUser> CreateUser(FacebookUserInfo userInfo, RefreshToken refreshToken)
+            private async Task<AppUser> CreateUser(FacebookUserInfo userInfo, Domain.RefreshToken refreshToken)
             {
                 AppUser user = new AppUser
                 {
