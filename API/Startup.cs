@@ -40,7 +40,7 @@ namespace API
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureDevelopmentSservices(IServiceCollection services)
+        public void ConfigureDevelopmentServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options =>
             {
@@ -52,7 +52,7 @@ namespace API
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureProductionSservices(IServiceCollection services)
+        public void ConfigureProductionServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(options =>
             {
@@ -189,7 +189,6 @@ namespace API
                 endpoints.MapFallbackToController("index", "Fallback");
             });
 
-            app.UseMvc();
         }
     }
 }
